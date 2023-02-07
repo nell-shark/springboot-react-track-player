@@ -1,10 +1,11 @@
 package com.nellshark.musicplayer.service;
 
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -14,7 +15,10 @@ import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +56,14 @@ public class S3Service {
     } catch (SdkClientException | SdkServiceException ase) {
       throw ase;
     }
+  }
+
+  public List<String> getAllObjects() {
+    ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
+    ListObjectsV2Response response = s3Client.listObjectsV2(request);
+
+    return response.contents().stream()
+        .map(S3Object::toString)
+        .toList();
   }
 }

@@ -1,6 +1,7 @@
 package com.nellshark.musicplayer.controller;
 
 import com.nellshark.musicplayer.service.TrackService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class TrackController {
   private final TrackService trackService;
 
   @GetMapping
-  public String test() {
-    return "test123";
+  public List<String> getAllTracks() {
+    return trackService.getAllTracks();
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
