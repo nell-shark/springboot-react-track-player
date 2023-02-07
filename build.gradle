@@ -16,6 +16,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web:3.0.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	implementation 'software.amazon.awssdk:s3:2.19.31'
+	runtimeOnly 'software.amazon.awssdk:bom:2.19.31'
+	implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 }
 
 tasks.named('test') {

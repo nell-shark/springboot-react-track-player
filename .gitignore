@@ -38,3 +38,5 @@ out/
 
 ### React ###
 /src/main/frontend/node_modules/
+
+.env

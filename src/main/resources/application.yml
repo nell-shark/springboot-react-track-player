@@ -1,0 +1,13 @@
+amazon:
+  credentials:
+    access:
+      key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
+    secret:
+      key: ${AMAZON_CREDENTIALS_SECRET_KEY}
+  bucket:
+    name: ${AMAZON_BUCKET_NAME}
+spring:
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
