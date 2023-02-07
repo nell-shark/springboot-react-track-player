@@ -1,12 +1,19 @@
 amazon:
+  bucket:
+    name: ${AMAZON_BUCKET_NAME}
   credentials:
     access:
       key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
     secret:
       key: ${AMAZON_CREDENTIALS_SECRET_KEY}
-  bucket:
-    name: ${AMAZON_BUCKET_NAME}
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
   servlet:
     multipart:
       max-file-size: 25MB
