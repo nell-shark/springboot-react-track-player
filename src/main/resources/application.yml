@@ -1,11 +1,3 @@
-amazon:
-  bucket:
-    name: ${AMAZON_BUCKET_NAME}
-  credentials:
-    access:
-      key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
-    secret:
-      key: ${AMAZON_CREDENTIALS_SECRET_KEY}
 spring:
   security:
     oauth2:
@@ -18,3 +10,9 @@ spring:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
+amazon:
+  bucket:
+    name: ${AMAZON_BUCKET_NAME_TRACKS}
+  credentials:
+    access-key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
+    secret-key: ${AMAZON_CREDENTIALS_SECRET_KEY}

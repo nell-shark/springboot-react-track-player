@@ -12,9 +12,9 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class AmazonConfig {
 
-  @Value("${amazon.credentials.access.key}")
+  @Value("${amazon.credentials.access-key}")
   private String accessKey;
-  @Value("${amazon.credentials.secret.key}")
+  @Value("${amazon.credentials.secret-key}")
   private String secretKey;
 
   @Bean

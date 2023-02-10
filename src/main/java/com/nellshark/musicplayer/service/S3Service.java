@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseBytes;
@@ -26,10 +25,9 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 public class S3Service {
 
   private final S3Client s3Client;
-  @Value("${amazon.bucket.name}")
-  private String bucketName;
 
-  public void upload(MultipartFile file) {
+
+  public void upload(String bucketName, MultipartFile file) {
     try {
       log.info("Uploading a track to S3 - {}", file);
       s3Client.putObject(
@@ -46,7 +44,7 @@ public class S3Service {
     }
   }
 
-  public byte[] getObject(String keyName) {
+  public byte[] getObject(String bucketName, String keyName) {
     try {
       log.info("Retrieving file from S3 for key: {}/{}", bucketName, keyName);
       ResponseBytes<GetObjectResponse> s3Object = s3Client.getObject(
@@ -58,7 +56,7 @@ public class S3Service {
     }
   }
 
-  public List<String> getAllObjects() {
+  public List<String> getAllObjects(String bucketName) {
     ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
     ListObjectsV2Response response = s3Client.listObjectsV2(request);
 

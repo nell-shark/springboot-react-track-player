@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  app:
+    container_name: spring-boot
+    build: ./
+    ports:
+      - "8080:8080"
+    environment:
+      - GOOGLE_CLIENT_ID=${YOUR_GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${YOUR_GOOGLE_CLIENT_SECRET}
+      - AMAZON_BUCKET_NAME=${YOUR_AMAZON_BUCKET_NAME}
+      - AMAZON_CREDENTIALS_ACCESS_KEY=${YOUR_AMAZON_CREDENTIALS_ACCESS_KEY}
+      - AMAZON_CREDENTIALS_SECRET_KEY=${YOUR_AMAZON_CREDENTIALS_SECRET_KEY}
