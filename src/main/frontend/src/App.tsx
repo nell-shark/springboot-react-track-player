@@ -1,11 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { AboutPage } from '@pages/AboutPage';
+import { TracksPage } from '@pages/TracksPage';
 
-function App() {
+export default function App() {
   return (
-    <div className="App"></div>
+    <Routes>
+      <Route
+        path='/'
+        element={<TracksPage title='Tracks' />} >
+      </Route>
+      <Route
+        path='/about'
+        element={<AboutPage title='About' />} >
+      </Route>
+    </Routes>
   );
 }
-
-export default App;

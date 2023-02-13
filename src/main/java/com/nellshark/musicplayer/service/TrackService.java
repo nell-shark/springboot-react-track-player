@@ -1,6 +1,8 @@
 package com.nellshark.musicplayer.service;
 
+import com.nellshark.musicplayer.model.Track;
 import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,11 @@ public class TrackService {
     s3Service.upload(bucketName, file);
   }
 
-  public List<String> getAllTracks() {
-    return s3Service.getAllObjects(bucketName);
+  public List<Track> getAllTracks() {
+    return s3Service.getAllObjects(bucketName).stream()
+        .map(s3Object -> Track.builder().name(s3Object.key()).durationInSeconds(2L)
+            .id(new Random().nextLong())
+            .author("Random").build())
+        .toList();
   }
 }

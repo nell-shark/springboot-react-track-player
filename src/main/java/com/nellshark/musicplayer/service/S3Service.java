@@ -56,12 +56,11 @@ public class S3Service {
     }
   }
 
-  public List<String> getAllObjects(String bucketName) {
+  public List<S3Object> getAllObjects(String bucketName) {
     ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
     ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
     return response.contents().stream()
-        .map(S3Object::toString)
         .toList();
   }
 }

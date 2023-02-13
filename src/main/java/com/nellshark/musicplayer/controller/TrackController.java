@@ -1,9 +1,11 @@
 package com.nellshark.musicplayer.controller;
 
+import com.nellshark.musicplayer.model.Track;
 import com.nellshark.musicplayer.service.TrackService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/v1/tracks")
+@CrossOrigin(origins = "http://localhost:3000/")
 @RequiredArgsConstructor
 public class TrackController {
 
   private final TrackService trackService;
 
   @GetMapping
-  public List<String> getAllTracks() {
+  public List<Track> getAllTracks() {
     return trackService.getAllTracks();
   }
 
