@@ -51,6 +51,10 @@
     ]
   },
   "devDependencies": {
-    "craco-alias": "^3.0.1"
+    "craco-alias": "^3.0.1",
+    "image-minimizer-webpack-plugin": "^3.8.1",
+    "imagemin": "^8.0.1",
+    "imagemin-svgo": "^10.0.1",
+    "svgo": "^3.0.2"
   }
 }

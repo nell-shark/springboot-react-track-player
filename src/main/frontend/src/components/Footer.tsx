@@ -1,8 +1,12 @@
-import { EMAIL, GITHUB_PROFILE_URL, TELEGRAM_PROFILE_URL } from "@data/constants";
-import { faGithub, faTelegram } from "@fortawesome/free-brands-svg-icons";
-import { faAt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container } from "react-bootstrap";
+import {
+  EMAIL,
+  GITHUB_PROFILE_URL,
+  TELEGRAM_PROFILE_URL,
+} from '@data/constants';
+import { faGithub, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import { faAt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Container } from 'react-bootstrap';
 
 export function Footer() {
   return (
@@ -21,7 +25,7 @@ export function Footer() {
 
         <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li className="ms-3">
-            <a className="text-muted" href={"mailto:" + EMAIL}>
+            <a className="text-muted" href={'mailto:' + EMAIL}>
               <FontAwesomeIcon icon={faAt} />
             </a>
           </li>

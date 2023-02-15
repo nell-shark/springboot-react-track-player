@@ -7,7 +7,14 @@ import { GITHUB_PROFILE_URL } from '@data/constants';
 
 export function Navigation() {
   return (
-    <Navbar id="navigation" collapseOnSelect expand="lg" bg="dark" variant="dark" className="position-fixed w-100">
+    <Navbar
+      id="navigation"
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+      className="position-fixed w-100"
+    >
       <Container>
         <Navbar.Brand href={GITHUB_PROFILE_URL}>NellShark</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -24,13 +31,17 @@ export function Navigation() {
                 className="me-2"
                 aria-label="Search"
               />
-              <button type="submit" style={{ display: "none" }} />
+              <button type="submit" style={{ display: 'none' }} />
             </Form>
           </Nav>
           <Nav>
-            <Nav.Link href={process.env.REACT_APP_BASE_URL + "/oauth2/authorization/google"}>
+            <Nav.Link
+              href={
+                process.env.REACT_APP_BASE_URL + '/oauth2/authorization/google'
+              }
+            >
               <Button variant="outline-light">
-                <img src={googleLogo} alt="google.svg" className='sign-in' />
+                <img src={googleLogo} alt="google.svg" className="sign-in" />
                 Sign in
               </Button>
             </Nav.Link>

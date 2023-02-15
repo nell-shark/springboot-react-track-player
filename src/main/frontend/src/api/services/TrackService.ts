@@ -1,21 +1,20 @@
-import { Track } from "@interfaces/track";
-import { api } from "../api";
+import { Track } from '@interfaces/track';
+import { api } from '../api';
 
 export class TrackService {
-    private static instance: TrackService;
+  private static instance: TrackService;
 
-    private constructor() { }
+  private constructor() {}
 
-    public static getInstance(): TrackService {
-        if (!TrackService.instance) {
-            TrackService.instance = new TrackService();
-        }
-
-        return TrackService.instance;
+  public static getInstance(): TrackService {
+    if (!TrackService.instance) {
+      TrackService.instance = new TrackService();
     }
 
-    public getAllTracks() {
-        return api.get<Track[]>("/api/v1/tracks");
-    }
+    return TrackService.instance;
+  }
+
+  public getAllTracks() {
+    return api.get<Track[]>('/api/v1/tracks');
+  }
 }
- 
