@@ -1,4 +1,4 @@
-package com.nellshark.musicplayer.config;
+package com.nellshark.musicplayer.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.nellshark.musicplayer.config;
+package com.nellshark.musicplayer.configs;
 
 import static software.amazon.awssdk.regions.Region.US_WEST_2;
 

@@ -1,7 +1,7 @@
-package com.nellshark.musicplayer.controller;
+package com.nellshark.musicplayer.controllers;
 
-import com.nellshark.musicplayer.model.Track;
-import com.nellshark.musicplayer.service.TrackService;
+import com.nellshark.musicplayer.models.Track;
+import com.nellshark.musicplayer.services.TrackService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package com.nellshark.musicplayer.service;
+package com.nellshark.musicplayer.services;
 
 import java.io.IOException;
 import java.util.List;

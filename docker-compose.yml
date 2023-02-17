@@ -1,7 +1,22 @@
 version: "3.8"
 services:
+  db:
+    image: mysql:8.0.32
+    container_name: db
+    environment:
+      MYSQL_USER: nellshark
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: player
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: "mysql $$MYSQL_DATABASE --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1;'"
+      interval: 2s
+      retries: 30
+      timeout: 60s
   app:
-    container_name: spring-boot
+    container_name: app
     build: ./
     ports:
       - "8080:8080"
@@ -11,3 +26,9 @@ services:
       - AMAZON_BUCKET_NAME=${YOUR_AMAZON_BUCKET_NAME}
       - AMAZON_CREDENTIALS_ACCESS_KEY=${YOUR_AMAZON_CREDENTIALS_ACCESS_KEY}
       - AMAZON_CREDENTIALS_SECRET_KEY=${YOUR_AMAZON_CREDENTIALS_SECRET_KEY}
+      -
+    depends_on:
+      db:
+        condition: service_healthy
+
+

@@ -1,6 +1,6 @@
-package com.nellshark.musicplayer.service;
+package com.nellshark.musicplayer.services;
 
-import com.nellshark.musicplayer.model.Track;
+import com.nellshark.musicplayer.models.Track;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
