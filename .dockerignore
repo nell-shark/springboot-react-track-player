@@ -24,4 +24,5 @@ build/
 src/main/frontend/
 **/node_modules/
 **/dist/
+**/build/
 

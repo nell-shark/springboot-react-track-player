@@ -1,9 +1,10 @@
+import googleLogo from '@assets/google.svg';
+import { GITHUB_PROFILE_URL } from '@data/constants';
 import { Button, Form } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import googleLogo from '@assets/google.svg';
-import { GITHUB_PROFILE_URL } from '@data/constants';
+
 
 export function Navigation() {
   return (

@@ -1,7 +1,7 @@
-import { Footer } from "@components/Footer";
-import { Navigation } from "@components/Navigation";
-import { useTitle } from "@hooks/useTitle";
-import { Page } from "@interfaces/page";
+import { Footer } from '@components/Footer';
+import { Navigation } from '@components/Navigation';
+import { useTitle } from '@hooks/useTitle';
+import { Page } from '@interfaces/page';
 
 interface AboutProps extends Page {}
 

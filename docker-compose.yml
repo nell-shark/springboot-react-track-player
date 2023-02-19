@@ -15,8 +15,8 @@ services:
       interval: 2s
       retries: 30
       timeout: 60s
-  app:
-    container_name: app
+  backend:
+    container_name: backend
     build: ./
     ports:
       - "8080:8080"
@@ -26,9 +26,13 @@ services:
       - AMAZON_BUCKET_NAME=${YOUR_AMAZON_BUCKET_NAME}
       - AMAZON_CREDENTIALS_ACCESS_KEY=${YOUR_AMAZON_CREDENTIALS_ACCESS_KEY}
       - AMAZON_CREDENTIALS_SECRET_KEY=${YOUR_AMAZON_CREDENTIALS_SECRET_KEY}
-      -
     depends_on:
       db:
         condition: service_healthy
+  frontend:
+    container_name: frontend
+    build: ./src/main/frontend
+    ports:
+      - "3000:3000"
 
 
