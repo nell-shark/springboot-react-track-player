@@ -1,5 +1,6 @@
 package com.nellshark.musicplayer.services;
 
+import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class S3Service {
   public void upload(String bucketName, MultipartFile file) {
     try {
       log.info("Uploading a track to S3 - {}", file);
+
+      if (file.isEmpty()) {
+        throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
+      }
+
       s3Client.putObject(
           PutObjectRequest.builder()
               .bucket(bucketName)
@@ -37,8 +43,6 @@ public class S3Service {
               .contentType(file.getContentType())
               .build(),
           RequestBody.fromBytes(file.getBytes()));
-    } catch (SdkServiceException | SdkClientException ase) {
-      throw ase;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

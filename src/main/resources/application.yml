@@ -15,7 +15,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://db:3306/player
+    url: jdbc:mysql://localhost:3306/player
     username: nellshark
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

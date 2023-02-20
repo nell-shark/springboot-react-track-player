@@ -26,6 +26,7 @@ services:
       - AMAZON_BUCKET_NAME=${YOUR_AMAZON_BUCKET_NAME}
       - AMAZON_CREDENTIALS_ACCESS_KEY=${YOUR_AMAZON_CREDENTIALS_ACCESS_KEY}
       - AMAZON_CREDENTIALS_SECRET_KEY=${YOUR_AMAZON_CREDENTIALS_SECRET_KEY}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/player
     depends_on:
       db:
         condition: service_healthy
@@ -34,5 +35,3 @@ services:
     build: ./src/main/frontend
     ports:
       - "3000:3000"
-
-
