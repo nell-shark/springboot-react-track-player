@@ -1,10 +1,10 @@
-import googleLogo from '@assets/google.svg';
-import { GITHUB_PROFILE_URL } from '@data/constants';
 import { Button, Form } from 'react-bootstrap';
+
+import { BASE_URL } from '@data/constants';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-
+import googleLogo from '@assets/google.svg';
 
 export function Navigation() {
   return (
@@ -17,7 +17,7 @@ export function Navigation() {
       className="position-fixed w-100"
     >
       <Container>
-        <Navbar.Brand href={GITHUB_PROFILE_URL}>NellShark</Navbar.Brand>
+        <Navbar.Brand>NellShark</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
@@ -32,15 +32,11 @@ export function Navigation() {
                 className="me-2"
                 aria-label="Search"
               />
-              <button type="submit" style={{ display: 'none' }} />
+              <button type="submit" hidden />
             </Form>
           </Nav>
           <Nav>
-            <Nav.Link
-              href={
-                process.env.REACT_APP_BASE_URL + '/oauth2/authorization/google'
-              }
-            >
+            <Nav.Link href={BASE_URL + '/oauth2/authorization/google'}>
               <Button variant="outline-light">
                 <img src={googleLogo} alt="google.svg" className="sign-in" />
                 Sign in

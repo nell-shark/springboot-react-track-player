@@ -23,7 +23,6 @@ export function Footer() {
             </span>
           </a>
         </div>
-
         <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li className="ms-3">
             <a className="text-muted" href={EMAIL_PROFILE_URL}>

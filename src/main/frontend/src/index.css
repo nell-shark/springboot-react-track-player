@@ -9,9 +9,16 @@
 }
 
 main {
-  padding-top: 80px;
+  padding-top: 100px;
 }
 
-.card-item {
+.card {
   min-width: 200px;
+  min-height: 260px;
+  transition: translate ease-in-out 100ms, box-shadow ease-in-out 100ms;
+}
+
+.card:hover {
+  translate: 0 -5px;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
 }

@@ -1,27 +1,16 @@
-import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import ListGroup from "react-bootstrap/ListGroup";
-import { Track } from "interfaces/track";
-import { TrackService } from "@services/TrackService";
-import { TrackItem } from "@components/TrackItem";
-
-const trackService: TrackService = TrackService.getInstance();
+import { Container } from 'react-bootstrap';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { TrackItem } from '@components/TrackItem';
+import { useTracks } from '../hooks/useTracks';
 
 export function TrackList() {
-  const [tracks, setTracks] = useState<Track[]>([]);
-
-  async function fetchTracks() {
-    const response = await trackService.getAllTracks();
-    setTracks(response.data);
-  }
-
-  useEffect(() => {
-    fetchTracks();
-  }, []);
+  const {loading, error, tracks} = useTracks();
 
   return (
     <main>
       <Container>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error}</p>}
         <ListGroup>
           {tracks.map((track) => (
             <TrackItem
