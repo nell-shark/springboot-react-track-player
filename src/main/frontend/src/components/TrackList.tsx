@@ -7,7 +7,7 @@ import { TrackItem } from "@components/TrackItem";
 
 const trackService: TrackService = TrackService.getInstance();
 
-export function TracksList() {
+export function TrackList() {
   const [tracks, setTracks] = useState<Track[]>([]);
 
   async function fetchTracks() {
@@ -21,7 +21,6 @@ export function TracksList() {
 
   return (
     <main>
-      <div>dasda</div>
       <Container>
         <ListGroup>
           {tracks.map((track) => (

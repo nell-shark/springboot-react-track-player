@@ -1,6 +1,6 @@
 import { Footer } from "@components/Footer";
 import { Navigation } from "@components/Navigation";
-import { TracksList } from "@components/TracksList";
+import { TrackList } from "@components/TrackList";
 import { useTitle } from "@hooks/useTitle";
 import { Page } from "@interfaces/page";
 
@@ -12,7 +12,7 @@ export function Tracks({ title }: TracksProps) {
   return (
     <>
       <Navigation />
-      <TracksList />
+      <TrackList />
       <Footer />
     </>
   );

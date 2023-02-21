@@ -11,3 +11,7 @@
 main {
   padding-top: 80px;
 }
+
+.card-item {
+  min-width: 200px;
+}

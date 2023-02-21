@@ -1,3 +1,4 @@
+import { CardList } from '@components/CardList';
 import { Footer } from '@components/Footer';
 import { Navigation } from '@components/Navigation';
 import { useTitle } from '@hooks/useTitle';
@@ -11,6 +12,7 @@ export function About({ title }: AboutProps) {
   return (
     <>
       <Navigation />
+      <CardList />
       <Footer />
     </>
   );
