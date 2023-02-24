@@ -7,8 +7,7 @@ export function TrackList() {
   const {loading, error, tracks} = useTracks();
 
   return (
-    <main>
-      <Container>
+      <>
         {loading && <p>Loading...</p>}
         {error && <p>{error}</p>}
         <ListGroup>
@@ -23,7 +22,6 @@ export function TrackList() {
             />
           ))}
         </ListGroup>
-      </Container>
-    </main>
+      </>
   );
 }

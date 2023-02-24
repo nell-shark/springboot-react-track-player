@@ -11,8 +11,7 @@ import { faAt } from '@fortawesome/free-solid-svg-icons';
 
 export function CardList() {
   return (
-    <main>
-      <Container>
+
         <Stack
           className="flex-wrap justify-content-center"
           direction="horizontal"
@@ -37,7 +36,6 @@ export function CardList() {
             link={GITHUB_PROFILE_URL}
           />
         </Stack>
-      </Container>
-    </main>
+
   );
 }
