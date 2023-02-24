@@ -3,12 +3,12 @@ import { Button, Form } from 'react-bootstrap';
 import { BASE_URL } from '@data/constants';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import NavbarBootstrap  from 'react-bootstrap/Navbar';
 import googleLogo from '@assets/google.svg';
 
-export function Navigation() {
+export function Navbar() {
   return (
-    <Navbar
+    <NavbarBootstrap
       id="navigation"
       collapseOnSelect
       expand="lg"
@@ -17,9 +17,9 @@ export function Navigation() {
       className="position-fixed w-100"
     >
       <Container>
-        <Navbar.Brand>NellShark</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
+        <NavbarBootstrap.Brand>NellShark</NavbarBootstrap.Brand>
+        <NavbarBootstrap.Toggle aria-controls="responsive-navbar-nav" />
+        <NavbarBootstrap.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Tracks</Nav.Link>
             <Nav.Link href="/about">About</Nav.Link>
@@ -43,8 +43,8 @@ export function Navigation() {
               </Button>
             </Nav.Link>
           </Nav>
-        </Navbar.Collapse>
+        </NavbarBootstrap.Collapse>
       </Container>
-    </Navbar>
+    </NavbarBootstrap>
   );
 }

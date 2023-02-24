@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react';
 
 import { AxiosError } from 'axios';
 import { Track } from '@interfaces/track';
-import { TrackService } from '@services/TrackService';
-
-const trackService: TrackService = TrackService.getInstance();
+import { trackService } from '@/services/TrackService';
 
 export function useTracks() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [error, setError] = useState('');
 
   async function fetchTracks() {
     setLoading(() => true);

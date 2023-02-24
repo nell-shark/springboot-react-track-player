@@ -32,7 +32,7 @@ export function CardList() {
           />
           <CardItem
             icon={faGithub}
-            color="#000000"
+            color="black"
             title="Github"
             link={GITHUB_PROFILE_URL}
           />
