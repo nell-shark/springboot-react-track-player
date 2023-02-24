@@ -35,8 +35,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### React ###
-/src/main/frontend/node_modules/
-
 .env
-src/main/frontend/build/
+/frontend/node_modules/
