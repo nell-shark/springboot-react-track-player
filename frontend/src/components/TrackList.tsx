@@ -1,7 +1,6 @@
-import { Container } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { TrackItem } from '@components/TrackItem';
-import { useTracks } from '../hooks/useTracks';
+import { useTracks } from '@hooks/useTracks';
 
 export function TrackList() {
   const {loading, error, tracks} = useTracks();

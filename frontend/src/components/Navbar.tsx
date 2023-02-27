@@ -1,9 +1,10 @@
-import { Button, Form } from 'react-bootstrap';
-
 import { BASE_URL } from '@data/constants';
+import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
+import { Link } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
-import NavbarBootstrap  from 'react-bootstrap/Navbar';
+import NavbarBootstrap from 'react-bootstrap/Navbar';
+import { SearchBar } from '@components/SearchBar';
 import googleLogo from '@assets/google.svg';
 
 export function Navbar() {
@@ -21,19 +22,15 @@ export function Navbar() {
         <NavbarBootstrap.Toggle aria-controls="responsive-navbar-nav" />
         <NavbarBootstrap.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/">Tracks</Nav.Link>
-            <Nav.Link href="/about">About</Nav.Link>
+            <Link to="/tracks" className="nav-link">
+              Tracks
+            </Link>
+            <Link to="/about" className="nav-link">
+              About
+            </Link>
           </Nav>
           <Nav>
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-              <button type="submit" hidden />
-            </Form>
+            <SearchBar />
           </Nav>
           <Nav>
             <Nav.Link href={BASE_URL + '/oauth2/authorization/google'}>

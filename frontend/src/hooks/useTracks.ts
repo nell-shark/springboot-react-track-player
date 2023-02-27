@@ -3,28 +3,34 @@ import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { Track } from '@interfaces/track';
 import { trackService } from '@/services/TrackService';
+import { useSearchParams } from 'react-router-dom';
 
 export function useTracks() {
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
+  const [searchParams] = useSearchParams();
 
   async function fetchTracks() {
     setLoading(() => true);
+    setError(() => '');
     try {
-      const response = await trackService.getAllTracks();
+      const search = searchParams.get('search');
+      const response = search
+        ? await trackService.searchTracks(search)
+        : await trackService.getAllTracks();
+        
       setTracks(response.data);
-      setLoading(false);
     } catch (err) {
       const error = err as AxiosError | Error;
-      setLoading(false);
       setError(error.message);
     }
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchTracks();
-  }, []);
+  }, [searchParams]);
 
   return { loading, error, tracks };
 }

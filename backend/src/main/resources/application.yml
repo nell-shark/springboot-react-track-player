@@ -13,10 +13,10 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
   datasource:
     url: jdbc:mysql://localhost:3306/player
-    username: nellshark
+    username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 amazon:

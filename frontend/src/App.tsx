@@ -13,9 +13,9 @@ export default function App() {
       <main>
         <Container>
           <Routes>
-            <Route path="/" element={<Tracks title="Tracks" />} />
+            <Route path="/tracks" element={<Tracks title="Tracks" />} />
             <Route path="/about" element={<About title="About" />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/tracks" />} />
           </Routes>
         </Container>
       </main>

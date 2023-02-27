@@ -22,8 +22,8 @@ public class TrackController {
   private final TrackService trackService;
 
   @GetMapping
-  public List<Track> getAllTracks() {
-    return trackService.getAllTracks();
+  public List<Track> getAllTracks(@RequestParam(value = "search", required = false) String search) {
+    return trackService.searchTracks(search);
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -27,6 +27,8 @@ dependencies {
     runtimeOnly 'software.amazon.awssdk:bom:2.19.31'
 
     implementation 'com.mysql:mysql-connector-j:8.0.32'
+
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
 
 tasks.named('test') {
