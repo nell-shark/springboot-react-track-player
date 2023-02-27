@@ -6,7 +6,6 @@ import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.repositories.TrackRepository;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ public class TrackService {
   private final S3Service s3Service;
   private final TrackRepository trackRepository;
 
-  public void upload(MultipartFile file) {
+  public void upload(String name, MultipartFile file) {
     log.info("Uploading file: " + file);
     if (file.isEmpty()) {
       throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
@@ -35,7 +34,13 @@ public class TrackService {
       throw new FileMustBeTrackException("File must be a Track");
     }
 
-    s3Service.upload(bucketName, file);
+    s3Service.upload(bucketName, name, file);
+
+    Track track = Track.builder()
+        .name(name)
+        .durationSeconds(1L)
+        .build();
+    trackRepository.save(track);
   }
 
   public List<Track> getAllTracks() {

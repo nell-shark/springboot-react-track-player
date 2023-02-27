@@ -15,6 +15,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+        .csrf().disable() // Delete
         .authorizeHttpRequests(
             authorization -> authorization.requestMatchers("/**").permitAll())
         .oauth2Login();

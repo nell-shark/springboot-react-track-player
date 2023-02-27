@@ -14,8 +14,8 @@ export function SearchBar() {
 
   async function search(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const value = searchRef?.current?.value;
-    if (!value || !value.trim().length) return;
+    const value = searchRef?.current?.value.trim();
+    if (!value?.trim().length) return;
 
     navigate({
       pathname: '/tracks',

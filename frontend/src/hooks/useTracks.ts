@@ -19,11 +19,11 @@ export function useTracks() {
       const response = search
         ? await trackService.searchTracks(search)
         : await trackService.getAllTracks();
-        
+
       setTracks(response.data);
     } catch (err) {
-      const error = err as AxiosError | Error;
-      setError(error.message);
+      const e = err as AxiosError | Error;
+      setError(e.message);
     }
     setLoading(false);
   }

@@ -25,14 +25,15 @@ public class Track {
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
+  @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
   @NonNull
-  @Column(name = "name", nullable = false, columnDefinition = "TEXT(255)")
   private String name;
 
-  @Column(name = "author", columnDefinition = "TEXT(255)")
+  @Column(name = "author", columnDefinition = "VARCHAR(255)")
   private String author;
 
-  @Column(name = "duration_seconds", columnDefinition = "SMALLINT UNSIGNED") // nullable = false
+  @Column(name = "duration_seconds", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+  @NonNull
   private Long durationSeconds;
 
 //  @Column(name = "name", nullable = false , columnDefinition = "TEXT")

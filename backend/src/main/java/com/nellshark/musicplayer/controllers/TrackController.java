@@ -2,8 +2,10 @@ package com.nellshark.musicplayer.controllers;
 
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.services.TrackService;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("api/v1/tracks")
 @CrossOrigin(origins = "http://localhost:3000/")
 @RequiredArgsConstructor
+@Slf4j
 public class TrackController {
 
   private final TrackService trackService;
@@ -27,7 +30,10 @@ public class TrackController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void upload(@RequestParam("file") MultipartFile multipartFile) {
-    trackService.upload(multipartFile);
+  public void uploadTrack(@RequestParam("name") String name, @RequestParam("file") MultipartFile file)
+      throws IOException {
+    log.warn(name);
+    log.warn(file.getName());
+//    trackService.upload(name, file);
   }
 }

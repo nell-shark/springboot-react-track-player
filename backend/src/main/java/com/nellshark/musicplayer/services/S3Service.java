@@ -28,7 +28,7 @@ public class S3Service {
   private final S3Client s3Client;
 
 
-  public void upload(String bucketName, MultipartFile file) {
+  public void upload(String bucketName, String key, MultipartFile file) {
     try {
       log.info("Uploading a track to S3 - {}", file);
 
@@ -39,7 +39,7 @@ public class S3Service {
       s3Client.putObject(
           PutObjectRequest.builder()
               .bucket(bucketName)
-              .key(file.getName())
+              .key(key)
               .contentType(file.getContentType())
               .build(),
           RequestBody.fromBytes(file.getBytes()));

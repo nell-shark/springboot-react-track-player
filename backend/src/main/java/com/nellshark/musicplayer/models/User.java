@@ -19,6 +19,6 @@ public class User {
   @Column(name = "id", updatable = false)
   private Long id;
 
-  @Column(name = "email", nullable = false, unique = true, columnDefinition = "TEXT")
+  @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
   private String email;
 }
