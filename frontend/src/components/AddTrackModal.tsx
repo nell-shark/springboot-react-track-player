@@ -17,6 +17,10 @@ export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
+  function handleChange(e: ChangeEvent<HTMLInputElement>){
+     setTrack(e.target.files?.item(0)!)
+  };
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
@@ -37,6 +41,7 @@ export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
     setLoading(false);
   }
 
+
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
@@ -53,7 +58,8 @@ export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
           <Form.Control
             type="file"
             className="mb-2"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setTrack(e.target.files?.item(0)!)}
+            accept="audio/mpeg, audio/mp"
+            onChange={handleChange}
           />
         </Modal.Body>
         <Modal.Footer>

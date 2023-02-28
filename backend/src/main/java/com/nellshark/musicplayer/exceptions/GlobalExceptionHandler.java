@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(FileIsEmptyException.class)
-  public ResponseEntity<ErrorResponse> handleFileIsEmptyException(HttpServletRequest request,
+  public ResponseEntity<ErrorResponse> handleFileIsEmptyException(
+      HttpServletRequest request,
       Exception exception) {
     log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 
@@ -20,7 +21,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(FileMustBeTrackException.class)
-  public ResponseEntity<ErrorResponse> handleFileMustBeTrackException(HttpServletRequest request,
+  public ResponseEntity<ErrorResponse> handleFileMustBeTrackException(
+      HttpServletRequest request,
       Exception exception) {
     log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 

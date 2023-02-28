@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,10 +33,11 @@ public class Track {
   @Column(name = "author", columnDefinition = "VARCHAR(255)")
   private String author;
 
-  @Column(name = "duration_seconds", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+  @Column(name = "duration_sec", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
   @NonNull
   private Long durationSeconds;
 
-//  @Column(name = "name", nullable = false , columnDefinition = "TEXT")
-//  private Byte[] data;
+  public Optional<String> getAuthor() {
+    return Optional.ofNullable(author);
+  }
 }

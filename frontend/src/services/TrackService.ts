@@ -12,16 +12,25 @@ export class TrackService {
     });
   }
 
-  public addTrack(name: string, file: File) {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('file', file);
+  public async addTrack(name: string, file: File) {
+    const audioContext = new window.AudioContext();
+    const fileBuffer = await file.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(fileBuffer);
+    const duration: number = Math.round(audioBuffer.duration);
 
-    return axiosInstance.post('/api/v1/tracks', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    return axiosInstance.post(
+      '/api/v1/tracks',
+      {
+        name,
+        file,
+        duration,
       },
-    });
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
   }
 }
 

@@ -2,7 +2,6 @@ package com.nellshark.musicplayer.controllers;
 
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.services.TrackService;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +29,10 @@ public class TrackController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadTrack(@RequestParam("name") String name, @RequestParam("file") MultipartFile file)
-      throws IOException {
-    log.warn(name);
-    log.warn(file.getName());
-//    trackService.upload(name, file);
+  public void uploadTrack(
+      @RequestParam("name") String name,
+      @RequestParam("duration") Long durationSec,
+      @RequestParam("file") MultipartFile file) {
+    trackService.upload(name, durationSec, file);
   }
 }

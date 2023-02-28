@@ -5,8 +5,8 @@ import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.repositories.TrackRepository;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ public class TrackService {
   private final S3Service s3Service;
   private final TrackRepository trackRepository;
 
-  public void upload(String name, MultipartFile file) {
+  public void upload(String name, Long durationSec, MultipartFile file) {
     log.info("Uploading file: " + file);
     if (file.isEmpty()) {
       throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
@@ -34,11 +34,13 @@ public class TrackService {
       throw new FileMustBeTrackException("File must be a Track");
     }
 
-    s3Service.upload(bucketName, name, file);
+    UUID id = UUID.randomUUID();
+    s3Service.upload(bucketName, id.toString(), file);
 
     Track track = Track.builder()
+//        .id()
         .name(name)
-        .durationSeconds(1L)
+        .durationSeconds(durationSec)
         .build();
     trackRepository.save(track);
   }
@@ -58,10 +60,11 @@ public class TrackService {
 
     return trackRepository.findAll()
         .stream()
-        .filter(track -> track.getName().toLowerCase().contains(_filter)
-            || ((Objects.nonNull(track.getAuthor())
-            && track.getAuthor().toLowerCase().contains(_filter)))
-        )
-        .toList();
+        .filter(track -> {
+          boolean searchByName = track.getName().toLowerCase().contains(_filter);
+          boolean searchByAuthor = track.getAuthor().isPresent()
+              && track.getAuthor().get().toLowerCase().contains(_filter);
+          return searchByName || searchByAuthor;
+        }).toList();
   }
 }

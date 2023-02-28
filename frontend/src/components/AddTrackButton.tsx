@@ -16,7 +16,7 @@ export function AddTrack() {
   }
 
   return (
-    <div className="text-center">
+    <div className="text-center mt-4">
       <Button variant="outline-dark" onClick={handleShow}>
         Add
         <FontAwesomeIcon icon={faMusic} color="purple" className="px-1" />
