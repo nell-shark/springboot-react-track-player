@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import { AxiosError } from 'axios';
-import { Track } from '@interfaces/track';
-import { trackService } from '@/services/TrackService';
-import { useSearchParams } from 'react-router-dom';
+import {AxiosError} from 'axios';
+import {Track} from '@interfaces/track';
+import {trackService} from '@/services/TrackService';
+import {useSearchParams} from 'react-router-dom';
 
 export function useTracks() {
   const [loading, setLoading] = useState(true);
@@ -28,9 +28,13 @@ export function useTracks() {
     setLoading(false);
   }
 
+  function addTrack(track: Track) {
+    setTracks(tracks.concat(track));
+  }
+
   useEffect(() => {
     fetchTracks();
   }, [searchParams]);
 
-  return { loading, error, tracks };
+  return {loading, error, tracks, addTrack};
 }

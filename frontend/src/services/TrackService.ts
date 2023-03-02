@@ -1,14 +1,18 @@
-import { Track } from '@interfaces/track';
-import { axiosInstance } from '@/services/axios-instance';
+import {Track} from '@interfaces/track';
+import {axiosInstance} from '@/services/axios-instance';
 
 export class TrackService {
   public getAllTracks() {
     return axiosInstance.get<Track[]>('/api/v1/tracks');
   }
 
+  public getTrackById(id: string){
+    return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
+  }
+
   public searchTracks(search: string) {
     return axiosInstance.get<Track[]>('/api/v1/tracks', {
-      params: { search },
+      params: {search},
     });
   }
 
@@ -18,13 +22,9 @@ export class TrackService {
     const audioBuffer = await audioContext.decodeAudioData(fileBuffer);
     const duration: number = Math.round(audioBuffer.duration);
 
-    return axiosInstance.post(
+    return axiosInstance.post<string>(
       '/api/v1/tracks',
-      {
-        name,
-        file,
-        duration,
-      },
+      {name, file, duration},
       {
         headers: {
           'Content-Type': 'multipart/form-data',

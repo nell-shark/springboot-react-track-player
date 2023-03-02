@@ -3,8 +3,13 @@ import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMusic } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import {Track} from "@interfaces/track";
 
-export function AddTrack() {
+interface AddTrackProps {
+  addTrack: (track: Track) => void;
+}
+
+export function AddTrack({addTrack}: AddTrackProps) {
   const [show, setShow] = useState(false);
 
   function handleClose() {
@@ -22,7 +27,7 @@ export function AddTrack() {
         <FontAwesomeIcon icon={faMusic} color="purple" className="px-1" />
       </Button>
 
-      {show && <AddTrackModal show={show} handleClose={handleClose} />}
+      {show && <AddTrackModal show={show} handleClose={handleClose} addTrack={addTrack} />}
     </div>
   );
 }

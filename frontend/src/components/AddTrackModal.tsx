@@ -1,37 +1,41 @@
-import { ChangeEvent, FormEvent, MouseEvent, useRef, useState } from 'react';
+import {ChangeEvent, FormEvent, useRef, useState} from 'react';
 
-import { AxiosError } from 'axios';
+import {AxiosError} from 'axios';
 import Button from 'react-bootstrap/Button';
-import { Form } from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { trackService } from '@services/TrackService';
+import {trackService} from '@services/TrackService';
+import {Track} from "@interfaces/track";
 
 interface AddTrackModalProps {
   show: boolean;
   handleClose: () => void;
+  addTrack: (track: Track) => void;
 }
 
-export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
+export function AddTrackModal({show, handleClose, addTrack}: AddTrackModalProps) {
   const trackNameRef = useRef<HTMLInputElement | null>(null);
-  const [track, setTrack] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>){
-     setTrack(e.target.files?.item(0)!)
-  };
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setFile(e.target.files?.item(0)!)
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
 
     const name = trackNameRef?.current?.value.trim();
-    if (!name?.length || !track) return;
+    if (!name?.length || !file) return;
 
     setLoading(true);
 
     try {
-      await trackService.addTrack(name, track);
+      const {data:trackId}  = await trackService.addTrack(name, file);
+      const {data: track} = await trackService.getTrackById(trackId);
+      addTrack(track);
       handleClose();
     } catch (err) {
       const e = err as AxiosError | Error;

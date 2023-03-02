@@ -2,17 +2,19 @@ package com.nellshark.musicplayer.services;
 
 import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
+import com.nellshark.musicplayer.exceptions.TrackNotFoundException;
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.repositories.TrackRepository;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +26,9 @@ public class TrackService {
   private final S3Service s3Service;
   private final TrackRepository trackRepository;
 
-  public void upload(String name, Long durationSec, MultipartFile file) {
+  public UUID upload(String name, Long durationSec, MultipartFile file) {
     log.info("Uploading file: " + file);
+
     if (file.isEmpty()) {
       throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
     }
@@ -38,16 +41,27 @@ public class TrackService {
     s3Service.upload(bucketName, id.toString(), file);
 
     Track track = Track.builder()
-//        .id()
-        .name(name)
-        .durationSeconds(durationSec)
-        .build();
+            .id(id)
+            .name(name)
+            .durationSec(durationSec)
+            .build();
+
     trackRepository.save(track);
+
+    return id;
   }
 
   public List<Track> getAllTracks() {
     log.info("Getting all tracks");
     return trackRepository.findAll();
+  }
+
+  public Track getTrackById(UUID id) {
+    return trackRepository.findAll()
+            .stream()
+            .filter(track -> track.getId().equals(id))
+            .findFirst()
+            .orElseThrow(() -> new TrackNotFoundException("Track wasn't found: " + id));
   }
 
   public List<Track> searchTracks(String filter) {

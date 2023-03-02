@@ -2,17 +2,20 @@ package com.nellshark.musicplayer.controllers;
 
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.services.TrackService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/tracks")
@@ -28,11 +31,16 @@ public class TrackController {
     return trackService.searchTracks(search);
   }
 
+  @GetMapping("{id}")
+  public Track getTrackById(@PathVariable("id") UUID id) {
+    return trackService.getTrackById(id);
+  }
+
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public void uploadTrack(
-      @RequestParam("name") String name,
-      @RequestParam("duration") Long durationSec,
-      @RequestParam("file") MultipartFile file) {
-    trackService.upload(name, durationSec, file);
+  public UUID uploadTrack(
+          @RequestParam("name") String name,
+          @RequestParam("duration") Long durationSec,
+          @RequestParam("file") MultipartFile file) {
+    return trackService.upload(name, durationSec, file);
   }
 }

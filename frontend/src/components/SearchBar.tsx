@@ -5,14 +5,14 @@ import {
 } from 'react-router-dom';
 
 import { Form } from 'react-bootstrap';
-import { useRef } from 'react';
+import {FormEvent, useRef} from 'react';
 
 export function SearchBar() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchRef = useRef<HTMLInputElement | null>(null);
 
-  async function search(e: React.FormEvent<HTMLFormElement>) {
+  async function search(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = searchRef?.current?.value.trim();
     if (!value?.trim().length) return;

@@ -1,26 +1,21 @@
-import { faHeart as Favorite } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faHeart as Favorite} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ListGroup from 'react-bootstrap/ListGroup';
+import {Track} from "@interfaces/track";
 
 export interface TrackItemProps {
-  id: number;
-  name: string;
-  seconds: number;
-  data: any;
+  track: Track
   favorite: boolean;
 }
 
 export function TrackItem({
-  id,
-  name,
-  seconds,
-  data,
-  favorite,
-}: TrackItemProps) {
+                            track,
+                            favorite,
+                          }: TrackItemProps) {
   return (
     <ListGroup.Item>
-      {name}
-      {favorite && <FontAwesomeIcon icon={Favorite} />}
+      {track.name}
+      {favorite && <FontAwesomeIcon icon={Favorite}/>}
     </ListGroup.Item>
   );
 }

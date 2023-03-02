@@ -22,22 +22,31 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(FileMustBeTrackException.class)
   public ResponseEntity<ErrorResponse> handleFileMustBeTrackException(
-      HttpServletRequest request,
-      Exception exception) {
+          HttpServletRequest request,
+          Exception exception) {
     log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 
     return buildResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, request, exception);
   }
 
+  @ExceptionHandler(TrackNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleTrackNotFoundException(
+          HttpServletRequest request,
+          Exception exception) {
+    log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
+
+    return buildResponseEntity(HttpStatus.NOT_FOUND, request, exception);
+  }
+
   private ResponseEntity<ErrorResponse> buildResponseEntity(
-      HttpStatus httpStatus,
-      HttpServletRequest request,
-      Exception exception) {
+          HttpStatus httpStatus,
+          HttpServletRequest request,
+          Exception exception) {
     ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), exception.getMessage(),
-        request.getRequestURL());
+            request.getRequestURL());
 
     return ResponseEntity
-        .status(httpStatus)
+            .status(httpStatus)
         .body(errorResponse);
   }
 }

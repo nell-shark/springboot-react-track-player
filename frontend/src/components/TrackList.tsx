@@ -1,26 +1,27 @@
 import ListGroup from 'react-bootstrap/ListGroup';
-import { TrackItem } from '@components/TrackItem';
-import { useTracks } from '@hooks/useTracks';
+import {TrackItem} from '@components/TrackItem';
+import {Track} from "@interfaces/track";
 
-export function TrackList() {
-  const {loading, error, tracks} = useTracks();
+interface TrackListProps {
+  loading: boolean;
+  error: string;
+  tracks: Track[];
+}
 
+export function TrackList({loading, error, tracks}: TrackListProps) {
   return (
-      <>
-        {loading && <p>Loading...</p>}
-        {error && <p>{error}</p>}
-        <ListGroup>
-          {tracks.map((track) => (
-            <TrackItem
-              key={track.id}
-              id={track.id}
-              name={track.name}
-              seconds={0}
-              data={undefined}
-              favorite={false}
-            />
-          ))}
-        </ListGroup>
-      </>
+    <>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      <ListGroup>
+        {tracks.map((track) => (
+          <TrackItem
+            key={track.id}
+            track={track}
+            favorite={false}
+          />
+        ))}
+      </ListGroup>
+    </>
   );
 }

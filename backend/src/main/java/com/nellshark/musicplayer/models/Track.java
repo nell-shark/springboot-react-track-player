@@ -2,16 +2,18 @@ package com.nellshark.musicplayer.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Table
 @Entity(name = "tracks")
@@ -22,9 +24,10 @@ import lombok.NonNull;
 public class Track {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, updatable = false)
-  private Long id;
+  @JdbcTypeCode(SqlTypes.VARCHAR)
+  @Column(name = "id", nullable = false, updatable = false, columnDefinition = ("VARCHAR(36)"))
+  @NonNull
+  private UUID id;
 
   @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
   @NonNull
@@ -35,7 +38,7 @@ public class Track {
 
   @Column(name = "duration_sec", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
   @NonNull
-  private Long durationSeconds;
+  private Long durationSec;
 
   public Optional<String> getAuthor() {
     return Optional.ofNullable(author);

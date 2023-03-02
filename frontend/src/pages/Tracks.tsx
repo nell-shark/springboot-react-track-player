@@ -1,17 +1,20 @@
-import { AddTrack } from '@components/AddTrackButton';
-import { Page } from '@interfaces/page';
-import { TrackList } from '@components/TrackList';
-import { useTitle } from '@hooks/useTitle';
+import {AddTrack} from '@components/AddTrackButton';
+import {Page} from '@interfaces/page';
+import {TrackList} from '@components/TrackList';
+import {useTitle} from '@hooks/useTitle';
+import {useTracks} from "@hooks/useTracks";
 
-export interface TracksProps extends Page {}
+export interface TracksProps extends Page {
+}
 
-export function Tracks({ title }: TracksProps) {
+export function Tracks({title}: TracksProps) {
   useTitle(title);
+  const {loading, error, tracks, addTrack} = useTracks();
 
   return (
     <>
-      <TrackList />
-      <AddTrack />
+      <TrackList loading={loading} error={error} tracks={tracks}/>
+      <AddTrack addTrack={addTrack} />
     </>
   );
 }
