@@ -1,13 +1,9 @@
-import {
-  EMAIL_PROFILE_URL,
-  GITHUB_PROFILE_URL,
-  TELEGRAM_PROFILE_URL,
-} from '@data/constants';
-import { faGithub, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import {EMAIL_PROFILE_URL, GITHUB_PROFILE_URL, TELEGRAM_PROFILE_URL,} from '@data/constants';
+import {faGithub, faTelegram} from '@fortawesome/free-brands-svg-icons';
 
-import { Container } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAt } from '@fortawesome/free-solid-svg-icons';
+import {Container} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faAt} from '@fortawesome/free-solid-svg-icons';
 
 export function Footer() {
   return (

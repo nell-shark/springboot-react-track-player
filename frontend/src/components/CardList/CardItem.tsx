@@ -1,7 +1,7 @@
-import { CSSProperties } from 'react';
-import { Card } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import {CSSProperties} from 'react';
+import {Card} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 
 export interface CardItemProps {
   icon: IconDefinition;
@@ -10,7 +10,7 @@ export interface CardItemProps {
   link: string;
 }
 
-export function CardItem({ icon, color, title , link }: CardItemProps) {
+export function CardItem({icon, color, title, link}: CardItemProps) {
   return (
     <a href={link} >
       <Card className="text-center card">

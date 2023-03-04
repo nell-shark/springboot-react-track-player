@@ -1,4 +1,4 @@
-import {AddTrack} from '@components/AddTrackButton';
+import {AddTrack} from '@components/AddTrack';
 import {Page} from '@interfaces/page';
 import {TrackList} from '@components/TrackList';
 import {useTitle} from '@hooks/useTitle';

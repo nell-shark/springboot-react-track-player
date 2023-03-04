@@ -1,10 +1,10 @@
-import { BASE_URL } from '@data/constants';
-import { Button } from 'react-bootstrap';
+import {BASE_URL} from '@data/constants';
+import {Button} from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import NavbarBootstrap from 'react-bootstrap/Navbar';
-import { SearchBar } from '@components/SearchBar';
+import {SearchBar} from '@components/Navbar/SearchBar';
 import googleLogo from '@assets/google.svg';
 
 export function Navbar() {

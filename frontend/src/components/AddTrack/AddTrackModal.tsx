@@ -33,7 +33,7 @@ export function AddTrackModal({show, handleClose, addTrack}: AddTrackModalProps)
     setLoading(true);
 
     try {
-      const {data:trackId}  = await trackService.addTrack(name, file);
+      const {data: trackId} = await trackService.addTrack(name, file);
       const {data: track} = await trackService.getTrackById(trackId);
       addTrack(track);
       handleClose();

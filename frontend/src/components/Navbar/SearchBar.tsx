@@ -1,10 +1,6 @@
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import {createSearchParams, useNavigate, useSearchParams,} from 'react-router-dom';
 
-import { Form } from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import {FormEvent, useRef} from 'react';
 
 export function SearchBar() {
