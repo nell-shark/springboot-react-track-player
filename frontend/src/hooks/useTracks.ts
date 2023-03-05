@@ -2,25 +2,29 @@ import {useEffect, useState} from 'react';
 
 import {AxiosError} from 'axios';
 import {Track} from '@interfaces/track';
-import {trackService} from '@/services/TrackService';
+import {trackService} from '@services/TrackService';
 import {useSearchParams} from 'react-router-dom';
+
+let page: number = 0;
 
 export function useTracks() {
   const [loading, setLoading] = useState(true);
-  const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string>('');
   const [searchParams] = useSearchParams();
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [hideShowMore, setHideShowMore] = useState<boolean>(false);
 
   async function fetchTracks() {
     setLoading(() => true);
     setError(() => '');
     try {
-      const search = searchParams.get('search');
-      const response = search
-        ? await trackService.searchTracks(search)
-        : await trackService.getAllTracks();
+      const filter = searchParams.get('filter') || undefined;
+      const {data: response} = await trackService.getAllTracks(page, filter);
 
-      setTracks(response.data);
+      if (response.length <= 0) setHideShowMore(true);
+      else setHideShowMore(false);
+
+      setTracks((prevTracks) => prevTracks.concat(response));
     } catch (err) {
       const e = err as AxiosError | Error;
       setError(e.message);
@@ -29,12 +33,19 @@ export function useTracks() {
   }
 
   function addTrack(track: Track) {
-    setTracks(tracks.concat(track));
+    setTracks(() => tracks.concat(track));
+  }
+
+  function showMore() {
+    page += 1;
+    fetchTracks();
   }
 
   useEffect(() => {
+    page = 0;
+    setTracks(() => []);
     fetchTracks();
-  }, [searchParams]);
+  }, [searchParams])
 
-  return {loading, error, tracks, addTrack};
+  return {loading, error, tracks, addTrack, showMore, hideShowMore};
 }

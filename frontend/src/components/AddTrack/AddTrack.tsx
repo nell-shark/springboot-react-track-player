@@ -21,12 +21,12 @@ export function AddTrack({addTrack}: AddTrackProps) {
   }
 
   return (
-    <div className="text-center mt-4">
-      <Button variant="outline-dark" onClick={handleShow}>
+    <>
+      <Button variant="outline-dark" onClick={handleShow} className="add-track" >
         Add
         <FontAwesomeIcon icon={faMusic} color="purple" className="px-1"/>
       </Button>
       <AddTrackModal show={show} handleClose={handleClose} addTrack={addTrack}/>
-    </div>
+    </>
   );
 }

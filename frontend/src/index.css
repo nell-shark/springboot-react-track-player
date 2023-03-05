@@ -22,3 +22,8 @@ main {
   translate: 0 -5px;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
 }
+
+.show-more, .add-track {
+  width: 107px;
+  height: 40px;
+}

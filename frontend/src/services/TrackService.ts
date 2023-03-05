@@ -1,19 +1,15 @@
 import {Track} from '@interfaces/track';
-import {axiosInstance} from '@/services/axios-instance';
+import {axiosInstance} from '@services/axios-instance';
 
 export class TrackService {
-  public getAllTracks() {
-    return axiosInstance.get<Track[]>('/api/v1/tracks');
-  }
-
-  public getTrackById(id: string){
-    return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
-  }
-
-  public searchTracks(search: string) {
+  public getAllTracks(page: number, filter?: string) {
     return axiosInstance.get<Track[]>('/api/v1/tracks', {
-      params: {search},
+      params: {page, filter}
     });
+  }
+
+  public getTrackById(id: string) {
+    return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
   }
 
   public async addTrack(name: string, file: File) {

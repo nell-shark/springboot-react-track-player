@@ -9,10 +9,10 @@ import {ErrorBoundary} from "@components/ErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ErrorBoundary>
-    <React.StrictMode>
+    {/*<React.StrictMode>*/}
       <BrowserRouter>
         <App/>
       </BrowserRouter>
-    </React.StrictMode>
+    {/*</React.StrictMode>*/}
   </ErrorBoundary>
 );

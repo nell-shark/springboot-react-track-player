@@ -1,12 +1,13 @@
-import {createSearchParams, useNavigate, useSearchParams,} from 'react-router-dom';
+import {createSearchParams, useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 
 import {Form} from 'react-bootstrap';
-import {FormEvent, useRef} from 'react';
+import {FormEvent, useEffect, useRef} from 'react';
 
 export function SearchBar() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchRef = useRef<HTMLInputElement | null>(null);
+  const location = useLocation();
 
   async function search(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -16,10 +17,15 @@ export function SearchBar() {
     navigate({
       pathname: '/tracks',
       search: createSearchParams({
-        search: searchRef.current!.value,
+        filter: searchRef.current!.value,
       }).toString(),
     });
   }
+
+  useEffect(() => {
+    if (location.pathname !== "/tracks")
+      searchRef.current!.value = "";
+  }, [location]);
 
   return (
     <Form className="d-flex" onSubmit={search}>
@@ -29,7 +35,7 @@ export function SearchBar() {
         className="me-2"
         aria-label="Search"
         ref={searchRef}
-        defaultValue={searchParams.get('search') || ''}
+        defaultValue={searchParams.get('filter') || ''}
       />
     </Form>
   );
