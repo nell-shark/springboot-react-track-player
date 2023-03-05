@@ -19,7 +19,7 @@ export function useTracks() {
     setError(() => '');
     try {
       const filter = searchParams.get('filter') || undefined;
-      const {data: response} = await trackService.getAllTracks(page, filter);
+      const {data: response} = await trackService.getTracks(page, filter);
 
       if (response.length <= 0) setHideShowMore(true);
       else setHideShowMore(false);

@@ -58,7 +58,7 @@ public class TrackService {
         return trackRepository.findAll();
     }
 
-    public List<Track> getAllTracks(Pageable pageable, String filter) {
+    public List<Track> getTracks(Pageable pageable, String filter) {
         log.info("Getting all tracks by page: " + pageable.getPageNumber());
         return StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable).getContent()

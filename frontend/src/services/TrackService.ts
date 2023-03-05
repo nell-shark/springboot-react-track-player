@@ -2,7 +2,7 @@ import {Track} from '@interfaces/track';
 import {axiosInstance} from '@services/axios-instance';
 
 export class TrackService {
-  public getAllTracks(page: number, filter?: string) {
+  public getTracks(page: number, filter?: string) {
     return axiosInstance.get<Track[]>('/api/v1/tracks', {
       params: {page, filter}
     });
