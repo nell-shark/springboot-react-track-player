@@ -1,51 +1,47 @@
 import {useEffect, useState} from 'react';
-
-import {AxiosError} from 'axios';
 import {Track} from '@interfaces/track';
 import {trackService} from '@services/TrackService';
 import {useSearchParams} from 'react-router-dom';
+import {useQuery} from "@tanstack/react-query";
+import {TRACKS} from "@data/query-keys";
 
-let page: number = 0;
 
 export function useTracks() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>('');
-  const [searchParams] = useSearchParams();
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [hideShowMore, setHideShowMore] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const [searchParams] = useSearchParams();
+
+  const {isFetching, error, refetch} = useQuery<Track[], Error>({
+    queryKey: [TRACKS, page],
+    queryFn: fetchTracks,
+    onSuccess: (data) => updateTrackList(data),
+    keepPreviousData: true
+  });
 
   async function fetchTracks() {
-    setLoading(() => true);
-    setError(() => '');
-    try {
-      const filter = searchParams.get('filter') || undefined;
-      const {data: response} = await trackService.getTracks(page, filter);
-
-      if (response.length <= 0) setHideShowMore(true);
-      else setHideShowMore(false);
-
-      setTracks((prevTracks) => prevTracks.concat(response));
-    } catch (err) {
-      const e = err as AxiosError | Error;
-      setError(e.message);
-    }
-    setLoading(false);
+    const filter = searchParams.get('filter') || undefined;
+    const {data: tracks} = await trackService.getTracks(page, filter);
+    setHasMore(() => (tracks.length >= 10));
+    return tracks;
   }
 
-  function addTrack(track: Track) {
-    setTracks(() => tracks.concat(track));
+  function updateTrackList(data: Track[]) {
+    for (const newTrack of data) {
+      if (!tracks.some(oldTrack => oldTrack.id === newTrack.id))
+        setTracks((prev) => prev.concat(newTrack));
+    }
   }
 
   function showMore() {
-    page += 1;
-    fetchTracks();
+    setPage((prev) => prev + 1)
   }
 
   useEffect(() => {
-    page = 0;
     setTracks(() => []);
-    fetchTracks();
+    refetch();
   }, [searchParams])
 
-  return {loading, error, tracks, addTrack, showMore, hideShowMore};
+  return {isFetching, error, tracks, showMore, hasMore};
 }

@@ -21,7 +21,7 @@ public class LoadDatabase {
                 Track track = Track.builder()
                         .id(uuid)
                         .name(uuid.toString())
-                        .durationSec(i)
+                        .seconds(i)
                         .build();
                 log.info("Loading data: " + trackRepository.save(track));
             }

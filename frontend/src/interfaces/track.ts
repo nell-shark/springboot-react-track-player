@@ -1,6 +1,6 @@
 export type Track = {
   id: string;
   name: string;
-  durationSec: number;
+  seconds: number;
   author: string;
 };

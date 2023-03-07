@@ -3,16 +3,14 @@ import {TrackItem} from '@components/TrackList/TrackItem';
 import {Track} from "@interfaces/track";
 
 interface TrackListProps {
-  loading: boolean;
-  error: string;
+  isFetching: boolean;
   tracks: Track[];
+  error?: string;
 }
 
-export function TrackList({loading, error, tracks}: TrackListProps) {
+export function TrackList({isFetching, tracks, error}: TrackListProps) {
   return (
     <>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
       <ListGroup>
         {tracks.map((track) => (
           <TrackItem
@@ -22,6 +20,8 @@ export function TrackList({loading, error, tracks}: TrackListProps) {
           />
         ))}
       </ListGroup>
+      {isFetching && <p>Loading...</p>}
+      {error && <p>error</p>}
     </>
   );
 }

@@ -45,7 +45,7 @@ public class TrackService {
         Track track = Track.builder()
                 .id(id)
                 .name(name)
-                .durationSec(durationSec)
+                .seconds(durationSec)
                 .build();
 
         trackRepository.save(track);

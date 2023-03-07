@@ -36,9 +36,9 @@ public class Track {
   @Column(name = "author", columnDefinition = "VARCHAR(255)")
   private String author;
 
-  @Column(name = "duration_sec", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+  @Column(name = "seconds", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
   @NonNull
-  private Long durationSec;
+  private Long seconds;
 
   public Optional<String> getAuthor() {
     return Optional.ofNullable(author);

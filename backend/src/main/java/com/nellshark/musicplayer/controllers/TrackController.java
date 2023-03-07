@@ -47,8 +47,8 @@ public class TrackController {
     @ResponseStatus(HttpStatus.CREATED)
     public UUID uploadTrack(
             @RequestParam("name") String name,
-            @RequestParam("duration") Long durationSec,
+            @RequestParam("seconds") Long seconds,
             @RequestParam("file") MultipartFile file) {
-        return trackService.upload(name, durationSec, file);
+        return trackService.upload(name, seconds, file);
     }
 }

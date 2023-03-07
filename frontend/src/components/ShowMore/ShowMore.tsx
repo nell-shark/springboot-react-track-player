@@ -1,16 +1,19 @@
 import Button from "react-bootstrap/Button";
 
 interface ShowMoreProps {
+  isFetching: boolean;
   showMore: () => void;
-  hide: boolean
+  hasMore: boolean
 }
 
-export function ShowMore({showMore, hide}: ShowMoreProps) {
+export function ShowMore({isFetching, showMore, hasMore}: ShowMoreProps) {
   return (
     <>
-      {!hide && <Button variant="outline-dark" onClick={showMore} className="show-more" >
-          Show more
-      </Button>}
+      {hasMore &&
+          <Button variant="outline-dark" onClick={showMore} className="show-more" disabled={isFetching}>
+              Show more
+          </Button>
+      }
     </>
   );
 }
