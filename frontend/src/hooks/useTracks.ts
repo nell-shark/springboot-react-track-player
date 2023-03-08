@@ -1,47 +1,30 @@
-import {useEffect, useState} from 'react';
-import {Track} from '@interfaces/track';
+import {TracksPage} from '@interfaces/track';
 import {trackService} from '@services/TrackService';
 import {useSearchParams} from 'react-router-dom';
-import {useQuery} from "@tanstack/react-query";
+import {useInfiniteQuery} from "@tanstack/react-query";
 import {TRACKS} from "@data/query-keys";
+import {useEffect, useState} from "react";
 
 
 export function useTracks() {
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [page, setPage] = useState<number>(0);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-
   const [searchParams] = useSearchParams();
 
-  const {isFetching, error, refetch} = useQuery<Track[], Error>({
-    queryKey: [TRACKS, page],
-    queryFn: fetchTracks,
-    onSuccess: (data) => updateTrackList(data),
-    keepPreviousData: true
-  });
+  const {data, isLoading, isFetching, error, hasNextPage, fetchNextPage, refetch} = useInfiniteQuery<TracksPage, Error>({
+    queryKey: [TRACKS],
+    getNextPageParam: (lastPage) => lastPage.hasNext ? lastPage.currentPage + 1 : undefined,
+    queryFn: ({pageParam = 1}) => fetchTrack(pageParam),
+    keepPreviousData: false
+  })
 
-  async function fetchTracks() {
+  async function fetchTrack(pageParam: number) {
     const filter = searchParams.get('filter') || undefined;
-    const {data: tracks} = await trackService.getTracks(page, filter);
-    setHasMore(() => (tracks.length >= 10));
-    return tracks;
-  }
-
-  function updateTrackList(data: Track[]) {
-    for (const newTrack of data) {
-      if (!tracks.some(oldTrack => oldTrack.id === newTrack.id))
-        setTracks((prev) => prev.concat(newTrack));
-    }
-  }
-
-  function showMore() {
-    setPage((prev) => prev + 1)
+    const {data} = await trackService.getTracks(pageParam, filter);
+    return data;
   }
 
   useEffect(() => {
-    setTracks(() => []);
     refetch();
   }, [searchParams])
 
-  return {isFetching, error, tracks, showMore, hasMore};
+  return {isLoading, isFetching, error, data, fetchNextPage, hasNextPage};
 }

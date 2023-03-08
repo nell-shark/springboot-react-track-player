@@ -9,12 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -58,11 +60,19 @@ public class TrackService {
         return trackRepository.findAll();
     }
 
-    public List<Track> getTracks(Pageable pageable, String filter) {
+    public Map<String, Object> getTracks(Pageable pageable, String filter) {
         log.info("Getting all tracks by page: " + pageable.getPageNumber());
-        return StringUtils.isBlank(filter)
-                ? trackRepository.findAll(pageable).getContent()
-                : searchTracks(pageable, filter);
+
+        Page<Track> page = StringUtils.isBlank(filter)
+                ? trackRepository.findAll(pageable)
+                : trackRepository.search(filter, pageable);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("tracks", page.getContent());
+        response.put("currentPage", page.getNumber() + 1);
+        response.put("hasNext", page.hasNext());
+
+        return response;
     }
 
     public Track getTrackById(UUID id) {
@@ -72,27 +82,5 @@ public class TrackService {
                 .filter(track -> track.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new TrackNotFoundException("Track wasn't found: " + id));
-    }
-
-    public List<Track> searchTracks(Pageable pageable, String filter) {
-        log.info("Searching tracks by filter: " + filter);
-        if (StringUtils.isBlank(filter)) {
-            return getAllTracks();
-        }
-
-        String _filter = filter.trim().toLowerCase();
-
-        return trackRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Track::getName))
-                .filter(track -> {
-                    boolean searchByName = track.getName().toLowerCase().contains(_filter);
-                    boolean searchByAuthor = track.getAuthor().isPresent()
-                            && track.getAuthor().get().toLowerCase().contains(_filter);
-                    return searchByName || searchByAuthor;
-                })
-                .skip((long) pageable.getPageNumber() * pageable.getPageSize())
-                .limit(pageable.getPageSize())
-                .toList();
     }
 }

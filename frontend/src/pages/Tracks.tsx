@@ -9,14 +9,16 @@ export interface TracksProps extends Page {
 }
 
 export function Tracks({title}: TracksProps) {
-  const {tracks, isFetching, error, showMore, hasMore} = useTracks();
+  const {data, isLoading, isFetching, error, fetchNextPage, hasNextPage} = useTracks();
   useTitle(title);
 
   return (
     <>
-      <TrackList isFetching={isFetching} tracks={tracks} error={error?.message}/>
+      <TrackList isLoading={isLoading}
+                 tracks={data?.pages.flatMap(value => value.tracks) || []}
+                 error={error?.message}/>
       <div className="mt-4 d-flex justify-content-center gap-3">
-        <ShowMore isFetching={isFetching} showMore={showMore} hasMore={hasMore}/>
+        <ShowMore isFetching={isFetching} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage}/>
         <AddTrack/>
       </div>
     </>

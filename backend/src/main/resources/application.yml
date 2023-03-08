@@ -19,6 +19,10 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
 amazon:
   bucket:
     name: ${AMAZON_BUCKET_NAME_TRACKS}

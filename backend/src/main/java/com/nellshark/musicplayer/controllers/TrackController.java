@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -32,8 +32,8 @@ public class TrackController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Track> getTracks(@PageableDefault(sort = "name") Pageable pageable,
-                                 @RequestParam(value = "filter", required = false) String filter) {
+    public Map<String, Object> getTracks(@PageableDefault(sort = "seconds") Pageable pageable,
+                                         @RequestParam(value = "filter", required = false) String filter) {
         return trackService.getTracks(pageable, filter);
     }
 

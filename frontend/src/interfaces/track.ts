@@ -4,3 +4,9 @@ export type Track = {
   seconds: number;
   author: string;
 };
+
+export type TracksPage = {
+  currentPage: number
+  hasNext: boolean,
+  tracks: Track[]
+};

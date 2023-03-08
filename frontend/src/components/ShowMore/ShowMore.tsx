@@ -2,15 +2,15 @@ import Button from "react-bootstrap/Button";
 
 interface ShowMoreProps {
   isFetching: boolean;
-  showMore: () => void;
-  hasMore: boolean
+  fetchNextPage: () => void;
+  hasNextPage?: boolean
 }
 
-export function ShowMore({isFetching, showMore, hasMore}: ShowMoreProps) {
+export function ShowMore({isFetching, fetchNextPage, hasNextPage}: ShowMoreProps) {
   return (
     <>
-      {hasMore &&
-          <Button variant="outline-dark" onClick={showMore} className="show-more" disabled={isFetching}>
+      {hasNextPage &&
+          <Button variant="outline-dark" onClick={fetchNextPage} className="show-more" disabled={isFetching}>
               Show more
           </Button>
       }

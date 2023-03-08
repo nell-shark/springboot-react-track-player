@@ -15,8 +15,8 @@ import org.hibernate.type.SqlTypes;
 import java.util.Optional;
 import java.util.UUID;
 
-@Table
-@Entity(name = "tracks")
+@Entity
+@Table(name = "tracks")
 @Data
 @Builder
 @NoArgsConstructor

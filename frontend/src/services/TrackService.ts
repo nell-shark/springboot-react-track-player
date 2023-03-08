@@ -1,9 +1,9 @@
-import {Track} from '@interfaces/track';
+import {Track, TracksPage} from '@interfaces/track';
 import {axiosInstance} from '@services/axios-instance';
 
 export class TrackService {
-  public getTracks(page: number = 0, filter?: string) {
-    return axiosInstance.get<Track[]>('/api/v1/tracks', {
+  public getTracks(page: number = 1, filter?: string) {
+    return axiosInstance.get<TracksPage>('/api/v1/tracks', {
       params: {page, filter}
     });
   }

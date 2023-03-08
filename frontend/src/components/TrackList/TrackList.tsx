@@ -3,12 +3,12 @@ import {TrackItem} from '@components/TrackList/TrackItem';
 import {Track} from "@interfaces/track";
 
 interface TrackListProps {
-  isFetching: boolean;
+  isLoading: boolean;
   tracks: Track[];
   error?: string;
 }
 
-export function TrackList({isFetching, tracks, error}: TrackListProps) {
+export function TrackList({isLoading, tracks, error}: TrackListProps) {
   return (
     <>
       <ListGroup>
@@ -20,7 +20,7 @@ export function TrackList({isFetching, tracks, error}: TrackListProps) {
           />
         ))}
       </ListGroup>
-      {isFetching && <p>Loading...</p>}
+      {isLoading && <p>Loading...</p>}
       {error && <p>error</p>}
     </>
   );
