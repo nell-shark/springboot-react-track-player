@@ -12,8 +12,7 @@ export function useTracks() {
   const {data, isLoading, isFetching, error, hasNextPage, fetchNextPage, refetch} = useInfiniteQuery<TracksPage, Error>({
     queryKey: [TRACKS],
     getNextPageParam: (lastPage) => lastPage.hasNext ? lastPage.currentPage + 1 : undefined,
-    queryFn: ({pageParam = 1}) => fetchTrack(pageParam),
-    keepPreviousData: false
+    queryFn: ({pageParam = 1}) => fetchTrack(pageParam)
   })
 
   async function fetchTrack(pageParam: number) {

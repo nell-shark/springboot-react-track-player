@@ -77,10 +77,9 @@ public class TrackService {
 
     public Track getTrackById(UUID id) {
         log.info("Getting track by Id: " + id);
-        return trackRepository.findAll()
-                .stream()
-                .filter(track -> track.getId().equals(id))
-                .findFirst()
+
+        return trackRepository
+                .findById(id)
                 .orElseThrow(() -> new TrackNotFoundException("Track wasn't found: " + id));
     }
 }

@@ -12,7 +12,6 @@ import lombok.NonNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +24,7 @@ public class Track {
 
   @Id
   @JdbcTypeCode(SqlTypes.VARCHAR)
-  @Column(name = "id", nullable = false, updatable = false, columnDefinition = ("VARCHAR(36)"))
+  @Column(name = "id", nullable = false, updatable = false, columnDefinition = "VARCHAR(36)")
   @NonNull
   private UUID id;
 
@@ -33,14 +32,7 @@ public class Track {
   @NonNull
   private String name;
 
-  @Column(name = "author", columnDefinition = "VARCHAR(255)")
-  private String author;
-
   @Column(name = "seconds", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
   @NonNull
   private Long seconds;
-
-  public Optional<String> getAuthor() {
-    return Optional.ofNullable(author);
-  }
 }

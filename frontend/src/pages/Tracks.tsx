@@ -16,7 +16,7 @@ export function Tracks({title}: TracksProps) {
     <>
       <TrackList isLoading={isLoading}
                  tracks={data?.pages.flatMap(value => value.tracks) || []}
-                 error={error?.message}/>
+                 error={error || undefined}/>
       <div className="mt-4 d-flex justify-content-center gap-3">
         <ShowMore isFetching={isFetching} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage}/>
         <AddTrack/>
