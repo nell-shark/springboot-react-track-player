@@ -1,5 +1,5 @@
 import ListGroup from 'react-bootstrap/ListGroup';
-import {TrackItem} from '@components/TrackList/TrackItem';
+import {TrackItem} from '@pages/Tracks/TrackList/TrackItem';
 import {Track} from "@interfaces/track";
 
 interface TrackListProps {
