@@ -14,18 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TrackService {
-
-    @Value("${amazon.bucket.name}")
+    @Value("${amazon.s3.buckets.tracks}")
     private String bucketName;
     private final S3Service s3Service;
     private final TrackRepository trackRepository;

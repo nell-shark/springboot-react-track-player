@@ -6,26 +6,33 @@ spring:
           github:
             clientId: ${GITHUB_CLIENT_ID}
             clientSecret: ${GITHUB_CLIENT_SECRET}
+
   servlet:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
+
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+
   datasource:
     url: jdbc:mysql://localhost:3306/player
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   data:
     web:
       pageable:
         one-indexed-parameters: true
+
 amazon:
-  bucket:
-    name: ${AMAZON_BUCKET_NAME_TRACKS}
+  s3:
+    buckets:
+      tracks: ${AMAZON_S3_BUCKETS_TRACKS}
+
   credentials:
     access-key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
     secret-key: ${AMAZON_CREDENTIALS_SECRET_KEY}
