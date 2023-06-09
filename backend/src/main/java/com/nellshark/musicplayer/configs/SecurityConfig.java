@@ -26,12 +26,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests().anyRequest().permitAll().and()
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost:3000"))
-                .logout(logoutConfigurer -> logoutConfigurer
-                        .logoutSuccessUrl("http://localhost:3000")
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                )
                 .build();
     }
 

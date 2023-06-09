@@ -10,43 +10,52 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler(FileIsEmptyException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, FileIsEmptyException exception) {
+        log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 
-  @ExceptionHandler(FileIsEmptyException.class)
-  public ResponseEntity<ErrorResponse> handleFileIsEmptyException(
-      HttpServletRequest request,
-      Exception exception) {
-    log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NO_CONTENT,
+                exception.getMessage(),
+                request.getRequestURI());
 
-    return buildResponseEntity(HttpStatus.NO_CONTENT, request, exception);
-  }
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
 
-  @ExceptionHandler(FileMustBeTrackException.class)
-  public ResponseEntity<ErrorResponse> handleFileMustBeTrackException(
-          HttpServletRequest request,
-          Exception exception) {
-    log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
+    @ExceptionHandler(FileMustBeTrackException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request,
+                                                         FileMustBeTrackException exception) {
+        log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 
-    return buildResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, request, exception);
-  }
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                exception.getMessage(),
+                request.getRequestURI());
 
-  @ExceptionHandler(TrackNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleTrackNotFoundException(
-          HttpServletRequest request,
-          Exception exception) {
-    log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
 
-    return buildResponseEntity(HttpStatus.NOT_FOUND, request, exception);
-  }
+    @ExceptionHandler(TrackNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, TrackNotFoundException exception) {
+        log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
 
-  private ResponseEntity<ErrorResponse> buildResponseEntity(
-          HttpStatus httpStatus,
-          HttpServletRequest request,
-          Exception exception) {
-    ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), exception.getMessage(),
-            request.getRequestURL());
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                request.getRequestURI());
 
-    return ResponseEntity
-            .status(httpStatus)
-        .body(errorResponse);
-  }
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception, HttpServletRequest request) {
+        log.error(exception.getClass().getSimpleName() + " Occurred: " + exception.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                exception.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
 }
