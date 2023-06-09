@@ -18,13 +18,21 @@ import java.util.List;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        return http
                 .cors().and()
-                .csrf().and()
-                .authorizeHttpRequests(
-                        authorization -> authorization.requestMatchers("/**").permitAll())
-                .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:3000"));
-        return http.build();
+                .csrf().disable()
+//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+//                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+                .authorizeHttpRequests().anyRequest().permitAll().and()
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("http://localhost:3000"))
+                .logout(logoutConfigurer -> logoutConfigurer
+                        .logoutSuccessUrl("http://localhost:3000")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .build();
     }
 
     @Bean
@@ -34,6 +42,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

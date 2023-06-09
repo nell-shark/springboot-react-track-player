@@ -1,7 +1,9 @@
 import {BASE_URL} from '@data/constants';
-import {Button} from 'react-bootstrap';
+import {Button, ButtonGroup} from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import {Link} from 'react-router-dom';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import Nav from 'react-bootstrap/Nav';
 import NavbarBs from 'react-bootstrap/Navbar';
 import {SearchBar} from '@components/Navbar/SearchBar';
@@ -9,10 +11,12 @@ import React, {useEffect, useState} from "react";
 import {faGithub} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {userService} from "@services/UserService";
+import {axiosInstance} from "@services/axios-instance";
 
 export function Navbar() {
     const [login, setLogin] = useState<string>("");
     const [avatarUrl, setAvatarUrl] = useState<string>("");
+    const [reloadComponent, setReloadComponent] = useState(false);
 
     useEffect(() => {
         async function fetch() {
@@ -23,6 +27,18 @@ export function Navbar() {
 
         fetch();
     });
+
+    useEffect(() => {
+        if (reloadComponent) {
+            // Perform any necessary actions or fetch data again
+            setReloadComponent(false);
+        }
+    }, [reloadComponent]);
+
+    async function logout() {
+        await axiosInstance.post("/api/v1/users/oauth/logout")
+        setReloadComponent(true);
+    }
 
     return (
         <NavbarBs
@@ -49,16 +65,24 @@ export function Navbar() {
                         <SearchBar/>
                     </Nav>
                     <Nav>
-                        <Nav.Link href={BASE_URL + '/oauth2/authorization/github'}>
-                            <Button variant="outline-light" className="d-flex align-items-center">
-                                {!login && <>
-                                    <FontAwesomeIcon icon={faGithub} className="sign-in"/>
-                                    Sign in</>}
-                                {login && <>
-                                    <img src={avatarUrl} alt="github" className="sign-in rounded"/>
-                                    {login}</>}
-                            </Button>
-                        </Nav.Link>
+                        {!login &&
+                            <Nav.Link href={BASE_URL + '/oauth2/authorization/github'}>
+                                <Button variant="outline-light" className="d-flex align-items-center">
+                                    <FontAwesomeIcon icon={faGithub} className="avatar"/>
+                                    Sign in
+                                </Button>
+                            </Nav.Link>}
+                        {login &&
+                            <DropdownButton
+                                as={ButtonGroup}
+                                title={
+                                    <>
+                                        <img src={avatarUrl} alt="user" className="avatar rounded"/>
+                                        {login}
+                                    </>}>
+                                <Dropdown.Item as={Link} to="/favorite">Favorite</Dropdown.Item>
+                                <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                            </DropdownButton>}
                     </Nav>
                 </NavbarBs.Collapse>
             </Container>
