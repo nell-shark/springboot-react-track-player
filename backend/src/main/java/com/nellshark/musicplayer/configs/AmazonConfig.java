@@ -13,15 +13,15 @@ import static software.amazon.awssdk.regions.Region.US_WEST_2;
 public class AmazonConfig {
   @Value("${amazon.credentials.access-key}")
   private String accessKey;
+
   @Value("${amazon.credentials.secret-key}")
   private String secretKey;
 
   @Bean
-  public S3Client setUpS3Client() {
+  public S3Client s3Client() {
     return S3Client.builder()
-        .region(US_WEST_2)
-        .credentialsProvider(
-            StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
-        .build();
+            .region(US_WEST_2)
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+            .build();
   }
 }

@@ -14,7 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,38 +29,25 @@ public class TrackService {
     private final S3Service s3Service;
     private final TrackRepository trackRepository;
 
-    public UUID upload(String name, Long durationSec, MultipartFile file) {
-        log.info("Uploading file: " + file);
+    public UUID uploadTrack(String trackName, Long seconds, MultipartFile file) throws IOException {
+        log.info("Uploading track: " + file);
 
-        if (file.isEmpty()) {
-            throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
-        }
+        if (file.isEmpty()) throw new FileIsEmptyException("Cannot upload empty file: " + file);
 
-        if (!Set.of("audio/mpeg", "audio/mp3").contains(file.getContentType())) {
-            throw new FileMustBeTrackException("File must be a Track");
-        }
+        if (!Set.of("audio/mpeg", "audio/mp3").contains(file.getContentType()))
+            throw new FileMustBeTrackException("File must be a track");
 
         UUID id = UUID.randomUUID();
-        s3Service.upload(bucketName, id.toString(), file);
+        s3Service.putObject(bucketName, id.toString(), file.getBytes());
 
-        Track track = Track.builder()
-                .id(id)
-                .name(name)
-                .seconds(durationSec)
-                .build();
-
+        Track track = new Track(id, trackName, seconds);
         trackRepository.save(track);
 
         return id;
     }
 
-    public List<Track> getAllTracks() {
-        log.info("Getting all tracks");
-        return trackRepository.findAll();
-    }
-
     public Map<String, Object> getTracks(Pageable pageable, String filter) {
-        log.info("Getting all tracks by page: " + pageable.getPageNumber());
+        log.info("Getting tracks by page: " + pageable.getPageNumber());
 
         Page<Track> page = StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable)

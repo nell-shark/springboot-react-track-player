@@ -1,17 +1,18 @@
 package com.nellshark.musicplayer.services;
 
-import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.ResponseBytes;
-import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.core.exception.SdkServiceException;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,45 +21,41 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class S3Service {
-  private final S3Client s3Client;
+    private final S3Client s3Client;
 
-  public void upload(String bucketName, String key, MultipartFile file) {
-    try {
-      log.info("Uploading a track to S3 - {}", file);
+    public void putObject(String bucketName, String key, byte[] file) {
+        log.info("Uploading track to S3 - bucket: {}, key: {}", bucketName, key);
 
-      if (file.isEmpty()) {
-        throw new FileIsEmptyException("Cannon upload empty file: " + file.getSize());
-      }
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
 
-      s3Client.putObject(
-          PutObjectRequest.builder()
-              .bucket(bucketName)
-              .key(key)
-              .contentType(file.getContentType())
-              .build(),
-          RequestBody.fromBytes(file.getBytes()));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file));
     }
-  }
 
-  public byte[] getObject(String bucketName, String keyName) {
-    try {
-      log.info("Retrieving file from S3 for key: {}/{}", bucketName, keyName);
-      ResponseBytes<GetObjectResponse> s3Object = s3Client.getObject(
-          GetObjectRequest.builder().bucket(bucketName).key(keyName).build(),
-          ResponseTransformer.toBytes());
-      return s3Object.asByteArray();
-    } catch (SdkClientException | SdkServiceException ase) {
-      throw ase;
+    public byte[] getObject(String bucketName, String key) throws S3Exception {
+        log.info("Retrieving file from S3 for key: {}/{}", bucketName, key);
+
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(key).build();
+        ResponseInputStream<GetObjectResponse> res = s3Client.getObject(getObjectRequest);
+
+        try {
+            return res.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public List<S3Object> getAllObjects(String bucketName) {
-    ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
-    ListObjectsV2Response response = s3Client.listObjectsV2(request);
+    public List<S3Object> getAllS3Objects(String bucketName) {
+        log.info("Getting all objects from bucket - {}", bucketName);
 
-    return response.contents().stream()
-        .toList();
-  }
+        ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
+        ListObjectsV2Response response = s3Client.listObjectsV2(request);
+
+        return response
+                .contents()
+                .stream()
+                .toList();
+    }
 }

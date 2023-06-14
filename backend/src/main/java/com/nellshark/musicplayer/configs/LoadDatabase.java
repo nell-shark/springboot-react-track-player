@@ -17,12 +17,8 @@ public class LoadDatabase {
         log.info("Starting database initialization");
         return args -> {
             for (long i = 0; i < 30; i++) {
-                UUID uuid = UUID.randomUUID();
-                Track track = Track.builder()
-                        .id(uuid)
-                        .name(uuid.toString())
-                        .seconds(i)
-                        .build();
+                UUID id = UUID.randomUUID();
+                Track track = new Track(id, String.valueOf(i), i);
                 log.info("Loading data: " + trackRepository.save(track));
             }
         };

@@ -9,23 +9,19 @@ spring:
             scope:
               - read:user
               - user:email
-
   servlet:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
-
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
-
   datasource:
     url: jdbc:mysql://localhost:3306/player
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   data:
     web:
       pageable:
@@ -34,8 +30,14 @@ spring:
 amazon:
   s3:
     buckets:
-      tracks: ${AMAZON_S3_BUCKETS_TRACKS}
-
+      tracks: music-tracks
   credentials:
     access-key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
     secret-key: ${AMAZON_CREDENTIALS_SECRET_KEY}
+
+cors:
+  allowed-origins: "http://localhost:3000"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  allowed-credentials: true
+  exposed-headers: "*"
