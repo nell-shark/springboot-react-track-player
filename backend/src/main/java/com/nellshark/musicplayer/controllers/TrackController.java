@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -43,10 +41,8 @@ public class TrackController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public UUID uploadTrack(
-            @RequestParam("name") @NotBlank String name,
-            @RequestParam("seconds") @Min(0) Long seconds,
-            @RequestParam("file") MultipartFile file) throws IOException {
-        return trackService.uploadTrack(name, seconds, file);
+    public void uploadTrack(@RequestParam("name") @NotBlank String name,
+                            @RequestParam("file") MultipartFile file) {
+        trackService.uploadTrack(name, file);
     }
 }

@@ -5,9 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-
-import static software.amazon.awssdk.regions.Region.US_WEST_2;
 
 @Configuration
 public class AmazonConfig {
@@ -17,10 +16,13 @@ public class AmazonConfig {
   @Value("${amazon.credentials.secret-key}")
   private String secretKey;
 
+  @Value("${amazon.s3.region}")
+  private String region;
+
   @Bean
   public S3Client s3Client() {
     return S3Client.builder()
-            .region(US_WEST_2)
+            .region(Region.of(region))
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
             .build();
   }

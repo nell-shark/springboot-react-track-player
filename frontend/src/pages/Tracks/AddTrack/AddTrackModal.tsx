@@ -22,7 +22,7 @@ export function AddTrackModal({show, handleClose}: AddTrackModalProps) {
     });
 
   function getMutationFn(name: string, file: File) {
-    return trackService.postTrack(name, file);
+    return trackService.uploadTrack(name, file);
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {

@@ -51,6 +51,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(error.getStatus()).body(error);
     }
 
+    @ExceptionHandler(ParseTrackException.class)
+    public ResponseEntity<ErrorResponse> handleException(ParseTrackException e, HttpServletRequest request) {
+        log.error(e.getClass().getSimpleName() + " Occurred: " + e.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                e.getMessage(),
+                request.getRequestURI(),
+                LocalDateTime.now());
+
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
         log.error(e.getClass().getSimpleName() + " Occurred: " + e.getMessage());
