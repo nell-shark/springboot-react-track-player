@@ -16,7 +16,6 @@ import {axiosInstance} from "@services/axios-instance";
 export function Navbar() {
     const [login, setLogin] = useState<string>("");
     const [avatarUrl, setAvatarUrl] = useState<string>("");
-    const [reloadComponent, setReloadComponent] = useState(false);
 
     useEffect(() => {
         async function fetch() {
@@ -28,16 +27,10 @@ export function Navbar() {
         fetch();
     });
 
-    useEffect(() => {
-        if (reloadComponent) {
-            // Perform any necessary actions or fetch data again
-            setReloadComponent(false);
-        }
-    }, [reloadComponent]);
-
     async function logout() {
-        await axiosInstance.post("/api/v1/users/oauth/logout")
-        setReloadComponent(true);
+        await axiosInstance.post("/logout");
+        setLogin(() => "");
+        setAvatarUrl(() => "");
     }
 
     return (

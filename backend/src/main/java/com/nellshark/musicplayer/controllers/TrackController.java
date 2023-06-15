@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class TrackController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadTrack(@RequestParam("name") @NotBlank String name,
-                            @RequestParam("file") MultipartFile file) {
-        trackService.uploadTrack(name, file);
+                            @RequestParam("track") @NotNull MultipartFile track) {
+        trackService.uploadTrack(name, track);
     }
 }

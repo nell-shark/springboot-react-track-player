@@ -40,16 +40,16 @@ public class TrackService {
     private final TrackRepository trackRepository;
     private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of("audio/mpeg", "audio/mp3");
 
-    public void uploadTrack(String trackName, MultipartFile file) {
+    public void uploadTrack(String trackName, MultipartFile track) {
         log.info("Uploading track");
-        if (file.isEmpty()) throw new FileIsEmptyException("Cannot upload empty track: " + file);
+        if (track.isEmpty()) throw new FileIsEmptyException("Cannot upload empty track: " + track);
 
-        if (!ALLOWED_CONTENT_TYPES.contains(file.getContentType()))
+        if (!ALLOWED_CONTENT_TYPES.contains(track.getContentType()))
             throw new FileMustBeTrackException("File must be a track");
 
         Metadata metadata;
         byte[] trackBytes;
-        try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
+        try (InputStream inputStream = new BufferedInputStream(track.getInputStream())) {
             metadata = parseTrackMetadata(inputStream);
             trackBytes = inputStream.readAllBytes();
         } catch (IOException e) {
