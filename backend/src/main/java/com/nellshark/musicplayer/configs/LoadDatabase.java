@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Configuration
@@ -18,7 +19,7 @@ public class LoadDatabase {
         return args -> {
             for (long i = 0; i < 30; i++) {
                 UUID id = UUID.randomUUID();
-                Track track = new Track(id, String.valueOf(i), i);
+                Track track = new Track(id, String.valueOf(i), i, LocalDateTime.now().minusDays(i));
                 log.info("Loading data: " + trackRepository.save(track));
             }
         };

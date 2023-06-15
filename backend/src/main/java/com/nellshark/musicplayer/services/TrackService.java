@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ public class TrackService {
         UUID id = UUID.randomUUID();
         long seconds = (long) Double.parseDouble(metadata.get("xmpDM:duration"));
         s3Service.putObject(bucketName, id.toString(), trackBytes);
-        saveTrack(new Track(id, trackName, seconds));
+        saveTrack(new Track(id, trackName, seconds, LocalDateTime.now()));
     }
 
     private Metadata parseTrackMetadata(InputStream inputStream) throws IOException {

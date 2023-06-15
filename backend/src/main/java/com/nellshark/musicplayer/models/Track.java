@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -28,4 +29,7 @@ public class Track {
 
     @Column(name = "seconds", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
     private Long seconds;
+
+    @Column(name = "timestamp", nullable = false)
+    private LocalDateTime timestamp;
 }
