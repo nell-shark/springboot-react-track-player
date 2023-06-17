@@ -15,8 +15,9 @@ import java.util.Map;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
+
     @GetMapping("/info")
-    public Map<String, String> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
+    public Map<String, String> getUserLoginAndAvatar(@AuthenticationPrincipal OAuth2User principal) {
         return userService.getUserLoginAndAvatar(principal);
     }
 }

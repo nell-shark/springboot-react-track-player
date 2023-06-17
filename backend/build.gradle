@@ -20,7 +20,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.apache.tika:tika-core:2.8.0'
+    implementation 'org.apache.tika:tika-parsers:2.8.0'
+    implementation 'org.apache.tika:tika-parser-audiovideo-module:2.8.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -28,13 +30,11 @@ dependencies {
     implementation 'software.amazon.awssdk:s3:2.19.31'
     runtimeOnly 'software.amazon.awssdk:bom:2.19.31'
 
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
     implementation 'com.mysql:mysql-connector-j:8.0.32'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-
-    implementation 'org.apache.tika:tika-core:2.8.0'
-    implementation 'org.apache.tika:tika-parsers:2.8.0'
-    implementation 'org.apache.tika:tika-parser-audiovideo-module:2.8.0'
 }
 
 tasks.named('test') {

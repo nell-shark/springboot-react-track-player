@@ -16,7 +16,7 @@ public class UserService {
 
         Map<String, String> map = new HashMap<>();
         map.put("login", principal.getAttribute("login"));
-        map.put("avatar_url", principal.getAttribute("avatar_url"));
+        map.put("avatarUrl", principal.getAttribute("avatar_url"));
 
         return map;
     }

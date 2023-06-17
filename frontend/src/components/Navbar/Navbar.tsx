@@ -17,21 +17,21 @@ export function Navbar() {
     const [login, setLogin] = useState<string>("");
     const [avatarUrl, setAvatarUrl] = useState<string>("");
 
-    useEffect(() => {
-        async function fetch() {
-            const {data} = await userService.getUserName();
-            setLogin(() => data.login);
-            setAvatarUrl(() => data.avatarUrl);
-        }
-
-        fetch();
-    });
+    async function fetchUserInfo() {
+        const {data} = await userService.getUserInfo();
+        setLogin(() => data.login);
+        setAvatarUrl(() => data.avatarUrl);
+    }
 
     async function logout() {
         await axiosInstance.post("/logout");
         setLogin(() => "");
         setAvatarUrl(() => "");
     }
+
+    useEffect(() => {
+        fetchUserInfo();
+    });
 
     return (
         <NavbarBs
