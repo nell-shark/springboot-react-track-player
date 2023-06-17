@@ -1,6 +1,6 @@
 package com.nellshark.musicplayer.controllers;
 
-import com.nellshark.musicplayer.services.UserService;
+import com.nellshark.musicplayer.services.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,12 +12,12 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
-public class UserController {
-    private final UserService userService;
+@RequestMapping("/api/v1/users/oauth2")
+public class OAuth2UserController {
+    private final OAuth2UserService appOauth2UserService;
 
     @GetMapping("/info")
     public Map<String, String> getUserLoginAndAvatar(@AuthenticationPrincipal OAuth2User principal) {
-        return userService.getUserLoginAndAvatar(principal);
+        return appOauth2UserService.getUserLoginAndAvatar(principal);
     }
 }

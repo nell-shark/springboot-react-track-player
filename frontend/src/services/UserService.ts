@@ -3,7 +3,7 @@ import {UserInfo} from "@interfaces/user-Info";
 
 class UserService {
     public getUserInfo() {
-        return axiosInstance.get<UserInfo>('/api/v1/users/info');
+        return axiosInstance.get<UserInfo>('/api/v1/users/oauth2/info');
     }
 }
 

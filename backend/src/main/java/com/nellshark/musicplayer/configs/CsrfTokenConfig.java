@@ -6,7 +6,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 @Configuration
-public class CsrfTokenConfiguration {
+public class CsrfTokenConfig {
     @Bean
     public CsrfTokenRequestHandler csrfTokenRequestHandler() {
         XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();

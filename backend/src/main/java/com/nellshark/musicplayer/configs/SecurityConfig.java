@@ -1,5 +1,6 @@
 package com.nellshark.musicplayer.configs;
 
+import com.nellshark.musicplayer.services.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CsrfTokenRequestHandler csrfTokenRequestHandler;
+    private final OAuth2UserService oauth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -24,17 +26,23 @@ public class SecurityConfig {
                 .cors().and()
                 .csrf()
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .csrfTokenRequestHandler(csrfTokenRequestHandler).and()
+                    .csrfTokenRequestHandler(csrfTokenRequestHandler)
+                    .and()
                 .authorizeHttpRequests()
                     .anyRequest()
                     .permitAll().and()
                 .oauth2Login()
-                    .defaultSuccessUrl("http://localhost:3000").and()
+                    .userInfoEndpoint()
+                    .userService(oauth2UserService)
+                    .and()
+                    .defaultSuccessUrl("http://localhost:3000")
+                    .and()
                 .logout()
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
                     .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
-                    .logoutSuccessUrl("http://localhost:3000").and()
+                    .logoutSuccessUrl("http://localhost:3000")
+                    .and()
                 .build();
         //    @formatter:on
     }
