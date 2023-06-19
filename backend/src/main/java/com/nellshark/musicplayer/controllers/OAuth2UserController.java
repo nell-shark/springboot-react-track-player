@@ -24,7 +24,7 @@ public class OAuth2UserController {
         return oauth2UserService.getUserLoginAndAvatar(principal);
     }
 
-    @PostMapping(value = "/favorite/track")
+    @PostMapping("/favorite/track")
     public void addFavoriteTrackToUser(@AuthenticationPrincipal OAuth2User principal,
                                        @RequestBody Map<String, UUID> trackId) {
         oauth2UserService.addFavoriteTrackToUser(principal, trackId.get("trackId"));

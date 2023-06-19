@@ -56,12 +56,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         log.info("Adding favorite track to user: {}", trackId);
         Track track = trackService.getTrackById(trackId);
         Integer id = oauth2User.getAttribute("id");
-        AppOAuth2User userById = getAppOath2UserById(id);
+        AppOAuth2User userById = getAppOauth2UserById(id);
         userById.getFavoriteTracks().add(track);
         saveAppOAuth2User(userById);
     }
 
-    public AppOAuth2User getAppOath2UserById(Integer id) {
+    public AppOAuth2User getAppOauth2UserById(Integer id) {
         log.info("Getting OAuth2 user by id: {}", id);
         return oauth2UserRepository.findAll()
                 .stream()
