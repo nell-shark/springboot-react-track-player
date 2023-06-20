@@ -9,14 +9,14 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-public class AmazonConfig {
-    @Value("${amazon.credentials.access-key}")
+public class AwsConfig {
+    @Value("${aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${amazon.credentials.secret-key}")
+    @Value("${aws.credentials.secret-key}")
     private String secretKey;
 
-    @Value("${amazon.s3.region}")
+    @Value("${aws.region}")
     private String region;
 
     @Bean

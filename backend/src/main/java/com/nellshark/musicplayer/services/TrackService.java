@@ -1,5 +1,6 @@
 package com.nellshark.musicplayer.services;
 
+import com.nellshark.musicplayer.configs.S3Buckets;
 import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.musicplayer.exceptions.ParseTrackException;
@@ -14,7 +15,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,24 +40,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class TrackService {
-    @Value("${amazon.s3.buckets.tracks}")
-    private String bucketName;
     private final S3Service s3Service;
+    private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
     private static final List<String> TRACK_CONTENT_TYPES = List.of("audio/mpeg", "audio/mp3");
 
     public void initTracksTable() {
         log.info("Init tracks");
 
-        List<S3Object> s3Objects = s3Service.getS3ObjectsFromBucket(bucketName);
+        List<S3Object> s3Objects = s3Service.getS3ObjectsFromBucket(s3Buckets.getTracks());
         List<Track> tracks = s3Objects.stream()
                 .map(s3Object -> {
-                    Map<String, String> metadata = s3Service.getMetadata(bucketName, s3Object.key());
+                    Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
 
                     String name = metadata.get("name");
                     Integer seconds = Integer.parseInt(metadata.get("seconds"));
                     LocalDateTime timestamp = LocalDateTime.ofInstant(s3Object.lastModified(), ZoneOffset.UTC);
-                    byte[] bytes = s3Service.getObject(bucketName, s3Object.key());
+                    byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), s3Object.key());
 
                     return new Track(name, seconds, timestamp, bytes);
                 })
@@ -169,6 +168,6 @@ public class TrackService {
         metadata.put("name", savedTrack.getName());
         metadata.put("seconds", savedTrack.getSeconds().toString());
 
-        s3Service.putObject(bucketName, key, bytes, metadata);
+        s3Service.putObject(s3Buckets.getTracks(), key, bytes, metadata);
     }
 }

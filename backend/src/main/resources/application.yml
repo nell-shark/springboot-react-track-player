@@ -27,11 +27,11 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-amazon:
+aws:
+  region: eu-north-1
   s3:
     buckets:
       tracks: music-tracks
-    region: eu-north-1
   credentials:
     access-key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
     secret-key: ${AMAZON_CREDENTIALS_SECRET_KEY}
