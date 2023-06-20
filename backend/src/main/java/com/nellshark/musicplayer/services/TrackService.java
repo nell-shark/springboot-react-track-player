@@ -20,14 +20,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -38,42 +44,30 @@ public class TrackService {
     private String bucketName;
     private final S3Service s3Service;
     private final TrackRepository trackRepository;
-    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of("audio/mpeg", "audio/mp3");
+    private static final List<String> TRACK_CONTENT_TYPES = List.of("audio/mpeg", "audio/mp3");
 
-    public void uploadTrack(String trackName, MultipartFile track) {
-        log.info("Uploading track");
-        if (track.isEmpty()) throw new FileIsEmptyException("Cannot upload empty track: " + track);
+    public void initTracksTable() {
+        log.info("Init tracks");
 
-        if (!ALLOWED_CONTENT_TYPES.contains(track.getContentType()))
-            throw new FileMustBeTrackException("File must be a track");
+        List<S3Object> s3Objects = s3Service.getS3ObjectsFromBucket(bucketName);
+        List<Track> tracks = s3Objects.stream()
+                .map(s3Object -> {
+                    Map<String, String> metadata = s3Service.getMetadata(bucketName, s3Object.key());
 
-        Metadata metadata;
-        byte[] trackBytes;
-        try (InputStream inputStream = new BufferedInputStream(track.getInputStream())) {
-            metadata = parseTrackMetadata(inputStream);
-            trackBytes = inputStream.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                    String name = metadata.get("name");
+                    Integer seconds = Integer.parseInt(metadata.get("seconds"));
+                    LocalDateTime timestamp = LocalDateTime.ofInstant(s3Object.lastModified(), ZoneOffset.UTC);
+                    byte[] bytes = s3Service.getObject(bucketName, s3Object.key());
 
-        UUID id = UUID.randomUUID();
-        long seconds = (long) Double.parseDouble(metadata.get("xmpDM:duration"));
-        s3Service.putObject(bucketName, id.toString(), trackBytes);
-        saveTrack(new Track(id, trackName, seconds, LocalDateTime.now()));
+                    return new Track(name, seconds, timestamp, bytes);
+                })
+                .toList();
+
+        trackRepository.saveAll(tracks);
     }
 
-    private Metadata parseTrackMetadata(InputStream inputStream) throws IOException {
-        log.info("Parsing track metadata");
-        try {
-            BodyContentHandler handler = new BodyContentHandler();
-            Metadata metadata = new Metadata();
-            ParseContext parseContext = new ParseContext();
-            Mp3Parser mp3Parser = new Mp3Parser();
-            mp3Parser.parse(inputStream, handler, metadata, parseContext);
-            return metadata;
-        } catch (TikaException | SAXException e) {
-            throw new ParseTrackException("Failed to parse track metadata");
-        }
+    public List<Track> getTracks() {
+        return trackRepository.findAll();
     }
 
     public Map<String, Object> getTracks(Pageable pageable, String filter) {
@@ -90,6 +84,72 @@ public class TrackService {
         return response;
     }
 
+    public void uploadTrack(String trackName, MultipartFile trackFile) {
+        log.info("Uploading track: {}", trackName);
+        if (trackFile.isEmpty()) throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
+
+        if (!TRACK_CONTENT_TYPES.contains(trackFile.getContentType()))
+            throw new FileMustBeTrackException("File must be a track");
+
+        Metadata metadata;
+        byte[] trackBytes;
+        try (InputStream inputStream = new BufferedInputStream(trackFile.getInputStream())) {
+            metadata = parseTrackMetadata(inputStream);
+            trackBytes = inputStream.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Track track = new Track(trackName, getDurationInSeconds(metadata), LocalDateTime.now(), trackBytes);
+        saveTrack(track);
+    }
+
+    public void uploadTrack(String trackName, File trackFile) {
+        log.info("Uploading track: {}", trackName);
+        if (trackFile.length() == 0) throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
+
+        String contentType;
+        try {
+            contentType = Files.probeContentType(Path.of(trackFile.getPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (!TRACK_CONTENT_TYPES.contains(contentType))
+            throw new FileMustBeTrackException("File must be a track");
+
+
+        Metadata metadata;
+        byte[] trackBytes;
+        try (InputStream inputStream = new FileInputStream(trackFile)) {
+            metadata = parseTrackMetadata(inputStream);
+            trackBytes = inputStream.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Track track = new Track(trackName, getDurationInSeconds(metadata), LocalDateTime.now(), trackBytes);
+        saveTrack(track);
+    }
+
+    private int getDurationInSeconds(Metadata metadata) {
+        return (int) Double.parseDouble(metadata.get("xmpDM:duration"));
+    }
+
+    private Metadata parseTrackMetadata(InputStream inputStream) throws IOException {
+        log.info("Parsing track metadata");
+        try {
+            BodyContentHandler handler = new BodyContentHandler();
+            Metadata metadata = new Metadata();
+            ParseContext parseContext = new ParseContext();
+            Mp3Parser mp3Parser = new Mp3Parser();
+            mp3Parser.parse(inputStream, handler, metadata, parseContext);
+            return metadata;
+        } catch (TikaException | SAXException e) {
+            throw new ParseTrackException("Failed to parse track metadata");
+        }
+    }
+
     public Track getTrackById(UUID id) {
         log.info("Getting track by Id: {}", id);
         return trackRepository
@@ -98,7 +158,17 @@ public class TrackService {
     }
 
     public void saveTrack(Track track) {
-        log.info("Saving track: {}", track.getId());
-        trackRepository.save(track);
+        log.info("Saving track: {}", track);
+        Track savedTrack = trackRepository.save(track);
+
+        // Upload track to s3
+        String key = savedTrack.getId().toString();
+        byte[] bytes = savedTrack.getBytes();
+
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("name", savedTrack.getName());
+        metadata.put("seconds", savedTrack.getSeconds().toString());
+
+        s3Service.putObject(bucketName, key, bytes, metadata);
     }
 }

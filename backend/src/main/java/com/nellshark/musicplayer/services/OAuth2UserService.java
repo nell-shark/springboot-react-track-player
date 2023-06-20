@@ -37,7 +37,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     public Map<String, String> getUserLoginAndAvatar(OAuth2User principal) {
-        log.info("Getting OAuth2 login and avatar: {}", principal);
+        log.info("Getting login and avatar of OAuth2 user: {}", principal);
         if (Objects.isNull(principal)) return null;
 
         Map<String, String> map = new HashMap<>();

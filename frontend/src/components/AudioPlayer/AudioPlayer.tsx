@@ -9,9 +9,6 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({isActive, isPlaying}: AudioPlayerProps) {
-    if (!isActive) return null;
-
-
     return (
         <div className="fixed-bottom w-100 bg-light border-top">
             <Container className="d-flex align-items-center">

@@ -45,7 +45,7 @@ public class TrackController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadTrack(@RequestParam("name") @NotBlank String name,
-                            @RequestParam("track") @NotNull MultipartFile track) {
-        trackService.uploadTrack(name, track);
+                            @RequestParam("file") @NotNull MultipartFile file) {
+        trackService.uploadTrack(name, file);
     }
 }
