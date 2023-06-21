@@ -29,8 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +52,13 @@ public class TrackService {
                 .map(s3Object -> {
                     Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
 
+                    UUID id = UUID.fromString(s3Object.key());
                     String name = metadata.get("name");
                     Integer seconds = Integer.parseInt(metadata.get("seconds"));
-                    LocalDateTime timestamp = LocalDateTime.ofInstant(s3Object.lastModified(), ZoneOffset.UTC);
+                    Instant timestamp = s3Object.lastModified();
                     byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), s3Object.key());
 
-                    return new Track(name, seconds, timestamp, bytes);
+                    return new Track(id, name, seconds, timestamp, bytes);
                 })
                 .toList();
 
@@ -99,7 +99,7 @@ public class TrackService {
             throw new RuntimeException(e);
         }
 
-        Track track = new Track(trackName, getDurationInSeconds(metadata), LocalDateTime.now(), trackBytes);
+        Track track = new Track(null, trackName, getDurationInSeconds(metadata), Instant.now(), trackBytes);
         saveTrack(track);
     }
 
@@ -127,7 +127,7 @@ public class TrackService {
             throw new RuntimeException(e);
         }
 
-        Track track = new Track(trackName, getDurationInSeconds(metadata), LocalDateTime.now(), trackBytes);
+        Track track = new Track(null, trackName, getDurationInSeconds(metadata), Instant.now(), trackBytes);
         saveTrack(track);
     }
 

@@ -65,10 +65,12 @@ public class S3Service {
 
     public Map<String, String> getMetadata(String bucketName, String key) {
         log.info("Getting metadata - {}/{}", bucketName, key);
+
         HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build();
+
         HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
 
         return headObjectResponse.metadata();

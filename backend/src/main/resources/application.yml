@@ -17,7 +17,7 @@ spring:
     show-sql: true
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   datasource:
     url: jdbc:mysql://localhost:3306/player
     username: root
@@ -31,10 +31,10 @@ aws:
   region: eu-north-1
   s3:
     buckets:
-      tracks: music-tracks
+      tracks: ${AWS_S3_BUCKETS_TRACKS}
   credentials:
-    access-key: ${AMAZON_CREDENTIALS_ACCESS_KEY}
-    secret-key: ${AMAZON_CREDENTIALS_SECRET_KEY}
+    access-key: ${AWS_CREDENTIALS_ACCESS_KEY}
+    secret-key: ${AWS_CREDENTIALS_SECRET_KEY}
 
 cors:
   allowed-origins: "http://localhost:3000"
