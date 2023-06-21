@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.0.0",
@@ -47,6 +47,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.14.1",
     "@types/react": "^18.0.28",
@@ -55,6 +56,7 @@
     "image-minimizer-webpack-plugin": "^3.8.1",
     "imagemin": "^8.0.1",
     "imagemin-svgo": "^10.0.1",
+    "prettier": "^2.8.8",
     "svgo": "^3.0.2",
     "typescript": "^4.9.5",
     "web-vitals": "^3.1.1"

@@ -1,1 +1,1 @@
-export const TRACKS: string = "tracks";
+export const TRACKS: string = 'tracks';

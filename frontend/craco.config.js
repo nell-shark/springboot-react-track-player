@@ -10,8 +10,8 @@ module.exports = {
           minimizer: {
             implementation: ImageMinimizerPlugin.imageminMinify,
             options: {
-              plugins: [['svgo']],
-            },
+              plugins: [['svgo']]
+            }
           },
         })
       );
@@ -24,7 +24,7 @@ module.exports = {
       options: {
         source: 'tsconfig',
         baseUrl: './src',
-        tsConfigPath: './tsconfig.paths.json',
+        tsConfigPath: './tsconfig.paths.json'
       },
     },
   ],

@@ -1,0 +1,31 @@
+{
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "insertPragma": false,
+  "semi": true,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "printWidth": 120,
+  "proseWrap": "always",
+  "quoteProps": "as-needed",
+  "requirePragma": false,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "useTabs": false,
+  "importOrder": [
+    "^react",
+    "^@assets/(.*)$",
+    "^@components/(.*)$",
+    "^@data/(.*)$",
+    "^@hooks/(.*)$",
+    "^@interfaces/(.*)$",
+    "^@pages/(.*)$",
+    "^@services/(.*)$",
+    "^@fortawesome/(.*)$",
+    "^@tanstack/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true
+}

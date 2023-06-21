@@ -8,8 +8,9 @@
       "@services/*": ["./services/*"],
       "@data/*": ["./data/*"],
       "@pages/*": ["./pages/*"],
-      "@hooks/*": ["./hooks/*"],
-      "@/*": ["./*"]
+      "@hooks/*": [
+        "./hooks/*"
+      ]
     }
   }
 }

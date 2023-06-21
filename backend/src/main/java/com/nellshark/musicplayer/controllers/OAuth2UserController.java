@@ -20,13 +20,13 @@ public class OAuth2UserController {
     private final OAuth2UserService oauth2UserService;
 
     @GetMapping("/info")
-    public Map<String, String> getUserLoginAndAvatar(@AuthenticationPrincipal OAuth2User principal) {
-        return oauth2UserService.getUserLoginAndAvatar(principal);
+    public Map<String, String> getOAuth2UserInfo(@AuthenticationPrincipal OAuth2User principal) {
+        return oauth2UserService.getOAuth2UserInfo(principal);
     }
 
     @PostMapping("/favorite/track")
-    public void addFavoriteTrackToUser(@AuthenticationPrincipal OAuth2User principal,
+    public void addFavoriteTrackToUser(@AuthenticationPrincipal OAuth2User oauth2User,
                                        @RequestBody Map<String, UUID> trackId) {
-        oauth2UserService.addFavoriteTrackToUser(principal, trackId.get("trackId"));
+        oauth2UserService.addFavoriteTrackToUser(oauth2User, trackId.get("trackId"));
     }
 }
