@@ -5,9 +5,9 @@ import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { TRACKS } from '@data/query-keys';
+import { TRACKS } from '@data/queryKeys';
 
-import { trackService } from '@services/TrackService';
+import { trackService } from '@services/trackService';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

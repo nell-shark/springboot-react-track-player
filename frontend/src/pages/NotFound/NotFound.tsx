@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { useTitle } from '@hooks/useTitle';
 
-import { Page } from '@interfaces/page';
+import { Page } from '../../typings/page';
 
-interface NotFoundProps extends Page {
-}
+interface NotFoundProps extends Page {}
 
 export function NotFound({ title }: NotFoundProps) {
   useTitle(title);

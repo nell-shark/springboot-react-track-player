@@ -1,14 +1,15 @@
 import { Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { TrackInfo } from '@interfaces/track';
-
-import { axiosInstance } from '@services/axios-instance';
-import { trackService } from '@services/TrackService';
+import { axiosInstance } from '@services/axiosInstance';
+import { trackService } from '@services/trackService';
 
 import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
-import { faHeart as like, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { TrackInfo } from '../../../typings/track';
+
 
 export interface TrackItemProps {
   track: TrackInfo;

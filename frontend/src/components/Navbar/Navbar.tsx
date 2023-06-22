@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -11,11 +11,12 @@ import { SearchBar } from '@components/Navbar/SearchBar';
 
 import { BASE_URL } from '@data/constants';
 
-import { axiosInstance } from '@services/axios-instance';
-import { userService } from '@services/UserService';
+import { axiosInstance } from '@services/axiosInstance';
+import { userService } from '@services/userService';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 export function Navbar() {
   const [login, setLogin] = useState<string>('');

@@ -1,6 +1,6 @@
-import { Track, TracksPage } from '@interfaces/track';
+import { axiosInstance } from '@services/axiosInstance';
 
-import { axiosInstance } from '@services/axios-instance';
+import { Track, TracksPage } from '../typings/track';
 
 export class TrackService {
   public getTracks(page: number = 1, filter?: string) {

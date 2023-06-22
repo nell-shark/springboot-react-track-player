@@ -28,3 +28,10 @@ export default function App() {
     </>
   );
 }
+
+function x() {
+  const v = 5;
+  console.log(v);
+}
+
+x();

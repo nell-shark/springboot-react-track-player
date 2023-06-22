@@ -122,7 +122,7 @@ public class TrackService {
         byte[] trackBytes;
         try (InputStream inputStream = new FileInputStream(trackFile)) {
             metadata = parseTrackMetadata(inputStream);
-            trackBytes = inputStream.readAllBytes();
+            trackBytes = Files.readAllBytes(Path.of(trackFile.getAbsolutePath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
