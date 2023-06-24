@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "tracks")
 @Data
 @NoArgsConstructor
-public class Track {
+public class TrackInfo {
     @Id
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "VARCHAR(36)")
@@ -36,18 +36,15 @@ public class Track {
     @Column(name = "timestamp", nullable = false)
     private Instant timestamp;
 
-    @Transient
-    private byte[] bytes;
-
     @ManyToMany(mappedBy = "favoriteTracks")
     private Set<AppOAuth2User> users;
 
-    public Track(UUID id, String name, Integer seconds, Instant timestamp, byte[] bytes) {
+    @Builder
+    public TrackInfo(UUID id, String name, Integer seconds, Instant timestamp) {
         this.id = Objects.isNull(id) ? UUID.randomUUID() : id;
         this.name = name;
         this.seconds = seconds;
         this.timestamp = timestamp;
-        this.bytes = bytes;
         this.users = new HashSet<>();
     }
 }

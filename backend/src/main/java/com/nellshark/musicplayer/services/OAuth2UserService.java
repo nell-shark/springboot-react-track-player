@@ -2,7 +2,7 @@ package com.nellshark.musicplayer.services;
 
 import com.nellshark.musicplayer.exceptions.AppOauth2UserNotFoundException;
 import com.nellshark.musicplayer.models.AppOAuth2User;
-import com.nellshark.musicplayer.models.Track;
+import com.nellshark.musicplayer.models.TrackInfo;
 import com.nellshark.musicplayer.repositories.OAuth2UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     public void addFavoriteTrackToUser(OAuth2User oauth2User, UUID trackId) {
         log.info("Adding favorite track to user: {}", trackId);
-        Track track = trackService.getTrackById(trackId);
+        TrackInfo track = trackService.getTrackInfoById(trackId);
         Integer id = oauth2User.getAttribute("id");
         AppOAuth2User userById = getAppOauth2UserById(id);
         userById.getFavoriteTracks().add(track);

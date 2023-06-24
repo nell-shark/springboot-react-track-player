@@ -2,6 +2,7 @@ package com.nellshark.musicplayer.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -26,8 +27,8 @@ import java.util.Map;
 public class S3Service {
     private final S3Client s3Client;
 
-    public void putObject(String bucketName, String key, byte[] file, @Nullable Map<String, String> metadata) {
-        log.info("Uploading track to S3 - bucket: {}, key: {}", bucketName, key);
+    public void putObject(String bucketName, String key, @NonNull byte[] file, @Nullable Map<String, String> metadata) {
+        log.info("Uploading track to S3 - bucket/key: {}/{}", bucketName, key);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -39,7 +40,7 @@ public class S3Service {
     }
 
     public byte[] getObject(String bucketName, String key) {
-        log.info("Retrieving file from S3 for key: {}/{}", bucketName, key);
+        log.info("Retrieving file from S3 - bucket/key: {}/{}", bucketName, key);
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(key).build();
         ResponseInputStream<GetObjectResponse> res = s3Client.getObject(getObjectRequest);
@@ -64,7 +65,7 @@ public class S3Service {
     }
 
     public Map<String, String> getMetadata(String bucketName, String key) {
-        log.info("Getting metadata - {}/{}", bucketName, key);
+        log.info("Getting metadata - bucket/key {}/{}", bucketName, key);
 
         HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
                 .bucket(bucketName)

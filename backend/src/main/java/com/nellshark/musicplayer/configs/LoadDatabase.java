@@ -8,8 +8,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,27 @@ public class LoadDatabase {
 
     @Bean
     public CommandLineRunner initDatabase(TrackService trackService) {
-        log.info("Starting s3 initialization");
+        log.info("Starting initialization database");
         return args -> {
             trackService.initTracksTable();
 
+            if (!trackService.getTrackInfoList().isEmpty()) return;
+
             // First init
-            if (trackService.getTracks().isEmpty()) {
-                List<File> files = getSampleTrackFiles();
-                files.forEach(file -> trackService.uploadTrack(file.getName(), file));
-            }
+            List<File> files = getSampleTrackFiles();
+            files.stream()
+                    .map(file -> {
+                        try {
+                            return new MockMultipartFile(
+                                    file.getName(),
+                                    file.getName(),
+                                    "audio/mpeg",
+                                    new FileInputStream(file));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .forEach(multipartFile -> trackService.uploadTrack(multipartFile.getName(), multipartFile));
         };
     }
 
