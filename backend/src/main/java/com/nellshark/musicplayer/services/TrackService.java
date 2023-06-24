@@ -7,6 +7,7 @@ import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.musicplayer.exceptions.ParseTrackException;
 import com.nellshark.musicplayer.exceptions.TrackNotFoundException;
+import com.nellshark.musicplayer.models.TrackContentType;
 import com.nellshark.musicplayer.models.TrackInfo;
 import com.nellshark.musicplayer.models.TrackMetadata;
 import com.nellshark.musicplayer.models.TrackS3;
@@ -32,7 +33,9 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +44,6 @@ public class TrackService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
-    private static final List<String> TRACK_CONTENT_TYPES = List.of("audio/mpeg", "audio/mp3");
 
     public void initTracksTable() {
         log.info("Init tracks table");
@@ -116,10 +118,12 @@ public class TrackService {
     private void checkTrackFileIsValid(MultipartFile trackFile) {
         log.info("Validation track file");
 
-        if (trackFile.isEmpty())
+        if (Objects.isNull(trackFile) || trackFile.isEmpty())
             throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
 
-        if (!TRACK_CONTENT_TYPES.contains(trackFile.getContentType()))
+        if (Stream.of(TrackContentType.values())
+                .map(TrackContentType::getType)
+                .noneMatch(contentType -> contentType.equals(trackFile.getContentType())))
             throw new FileMustBeTrackException("File must be a track");
     }
 
@@ -161,7 +165,7 @@ public class TrackService {
 
         Map<String, String> metadata = convertTrackMetadataToMap(track.trackMetadata());
 
-        s3Service.putObject(s3Buckets.getTracks(), track.id().toString(), track.bytes(), metadata);
+        s3Service.putObject(s3Buckets.getTracks(), track.id().toString(), track.bytes(), metadata, null);
     }
 
     private Map<String, String> convertTrackMetadataToMap(TrackMetadata metadata) {

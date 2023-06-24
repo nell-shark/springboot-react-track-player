@@ -27,13 +27,19 @@ import java.util.Map;
 public class S3Service {
     private final S3Client s3Client;
 
-    public void putObject(String bucketName, String key, @NonNull byte[] file, @Nullable Map<String, String> metadata) {
+    public void putObject(String bucketName,
+                          String key,
+                          @NonNull byte[] file,
+                          @Nullable Map<String, String> metadata,
+                          @Nullable String contentType
+    ) {
         log.info("Uploading track to S3 - bucket/key: {}/{}", bucketName, key);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .metadata(metadata)
+                .contentType(contentType)
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file));

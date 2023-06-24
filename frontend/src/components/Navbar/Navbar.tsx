@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Nav from 'react-bootstrap/Nav';
 import NavbarBs from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,6 @@ import { userService } from '@services/userService';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 export function Navbar() {
   const [login, setLogin] = useState<string>('');
@@ -59,28 +57,28 @@ export function Navbar() {
           </Nav>
           <Nav>
             {!login && (
-              <Nav.Link href={BASE_URL + '/oauth2/authorization/github'}>
+              <a href={BASE_URL + '/oauth2/authorization/github'} className='text-decoration-none'>
                 <Button variant='outline-light' className='d-flex align-items-center'>
-                  <FontAwesomeIcon icon={faGithub} className='avatar' />
+                  <FontAwesomeIcon icon={faGithub} className='sign-in' />
                   Sign in
                 </Button>
-              </Nav.Link>
+              </a>
             )}
             {login && (
-              <DropdownButton
-                as={ButtonGroup}
-                title={
+              <Dropdown>
+                <Dropdown.Toggle variant='primary' id='dropdown-basic'>
                   <>
-                    <img src={avatarUrl} alt='user' className='avatar rounded' />
+                    <img src={avatarUrl} alt='user' className='sign-in avatar rounded' />
                     {login}
                   </>
-                }
-              >
-                <Dropdown.Item as={Link} to='/favorite'>
-                  Favorite
-                </Dropdown.Item>
-                <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
-              </DropdownButton>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item as={Link} to='/favorite'>
+                    Favorite
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             )}
           </Nav>
         </NavbarBs.Collapse>

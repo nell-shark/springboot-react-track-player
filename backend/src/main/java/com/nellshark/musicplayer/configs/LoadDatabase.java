@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nellshark.musicplayer.models.TrackContentType.MPEG;
+
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +40,7 @@ public class LoadDatabase {
                             return new MockMultipartFile(
                                     file.getName(),
                                     file.getName(),
-                                    "audio/mpeg",
+                                    MPEG.getType(),
                                     new FileInputStream(file));
                         } catch (IOException e) {
                             throw new RuntimeException(e);

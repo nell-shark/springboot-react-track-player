@@ -6,10 +6,13 @@ main {
     padding-top: 100px;
 }
 
+.sign-in {
+    margin-right: 5px;
+}
+
 .avatar {
     width: 19px;
     height: 19px;
-    margin-right: 5px;
 }
 
 .card {
