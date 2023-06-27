@@ -2,7 +2,6 @@ package com.nellshark.musicplayer.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -29,17 +28,14 @@ public class S3Service {
 
     public void putObject(String bucketName,
                           String key,
-                          @NonNull byte[] file,
-                          @Nullable Map<String, String> metadata,
-                          @Nullable String contentType
-    ) {
+                          byte[] file,
+                          @Nullable Map<String, String> metadata) {
         log.info("Uploading track to S3 - bucket/key: {}/{}", bucketName, key);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .metadata(metadata)
-                .contentType(contentType)
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file));

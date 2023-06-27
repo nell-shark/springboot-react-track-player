@@ -1,16 +1,11 @@
 package com.nellshark.musicplayer.services;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nellshark.musicplayer.configs.S3Buckets;
 import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.musicplayer.exceptions.ParseTrackException;
 import com.nellshark.musicplayer.exceptions.TrackNotFoundException;
-import com.nellshark.musicplayer.models.TrackContentType;
-import com.nellshark.musicplayer.models.TrackInfo;
-import com.nellshark.musicplayer.models.TrackMetadata;
-import com.nellshark.musicplayer.models.TrackS3;
+import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.repositories.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +25,10 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -44,45 +37,34 @@ public class TrackService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
+    public static final String TRACK_CONTENT_TYPE = "audio/mpeg";
 
     public void initTracksTable() {
         log.info("Init tracks table");
 
         List<S3Object> s3Objects = s3Service.getS3ObjectsFromBucket(s3Buckets.getTracks());
-        List<TrackInfo> tracks = s3Objects.stream()
-                .map(s3Object -> {
-                            TrackMetadata metadata = convertS3ObjectToTrackMetadata(s3Object);
-                            return TrackInfo.builder()
-                                    .id(UUID.fromString(s3Object.key()))
-                                    .name(metadata.name())
-                                    .seconds(metadata.seconds())
-                                    .timestamp(metadata.timestamp())
-                                    .build();
-                        }
-                )
-                .toList();
-
-        trackRepository.saveAll(tracks);
+        s3Objects.stream()
+                .map(this::convertS3ObjectToTrack)
+                .forEach(trackRepository::save);
     }
 
-    public List<TrackInfo> getTrackInfoList() {
+    public List<Track> getAllTracks() {
         log.info("Getting tracks");
         return trackRepository.findAll();
     }
 
-    public Map<String, Object> getTrackInfoListByPage(Pageable pageable, String filter) {
+    public Map<String, Object> getTracksByPage(Pageable pageable, String filter) {
         log.info("Getting tracks by page: {}", pageable.getPageNumber());
 
-        Page<TrackInfo> page = StringUtils.isBlank(filter)
+        Page<Track> page = StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable)
                 : trackRepository.search(filter, pageable);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("tracks", page.getContent());
-        response.put("currentPage", page.getNumber() + 1);
-        response.put("hasNext", page.hasNext());
-
-        return response;
+        return Map.of(
+                "tracks", page.getContent(),
+                "currentPage", page.getNumber() + 1,
+                "hasNext", page.hasNext()
+        );
     }
 
     public void uploadTrack(String trackName, MultipartFile trackFile) {
@@ -90,29 +72,23 @@ public class TrackService {
 
         checkTrackFileIsValid(trackFile);
 
-        Metadata tikaMetadata;
-        byte[] trackBytes;
+        Metadata tikaMetadata = getTikaMetadataFromMultipartFile(trackFile);
+        byte[] trackBytes = getBytesFromMultipartFile(trackFile);
 
-        try (InputStream inputStream = trackFile.getInputStream()) {
-            tikaMetadata = getTikaMetadataFromTrackInputStream(inputStream);
-            trackBytes = trackFile.getBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        Integer seconds = getDurationInSecondsFromMetadata(tikaMetadata);
+        UUID id = UUID.randomUUID();
+        Integer seconds = getTrackDurationFromTikaMetadata(tikaMetadata);
         Instant timestamp = Instant.now();
 
-        TrackInfo trackInfo = TrackInfo.builder()
+        Track track = Track.builder()
+                .id(id)
                 .name(trackName)
                 .seconds(seconds)
                 .timestamp(timestamp)
+                .bytes(trackBytes)
                 .build();
-        UUID id = saveTrackInfo(trackInfo);
 
-        TrackMetadata metadata = new TrackMetadata(trackName, seconds, timestamp);
-        TrackS3 trackS3 = new TrackS3(id, trackBytes, metadata);
-        saveTrackS3(trackS3);
+        saveTrackToDb(track);
+        saveTrackToS3(track);
     }
 
     private void checkTrackFileIsValid(MultipartFile trackFile) {
@@ -121,21 +97,20 @@ public class TrackService {
         if (Objects.isNull(trackFile) || trackFile.isEmpty())
             throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
 
-        if (Stream.of(TrackContentType.values())
-                .map(TrackContentType::getType)
-                .noneMatch(contentType -> contentType.equals(trackFile.getContentType())))
+        if (!Objects.equals(trackFile.getContentType(), TRACK_CONTENT_TYPE))
             throw new FileMustBeTrackException("File must be a track");
     }
 
-    private int getDurationInSecondsFromMetadata(Metadata metadata) {
-        log.info("Getting seconds from track metadata");
+    private int getTrackDurationFromTikaMetadata(Metadata metadata) {
+        log.info("Getting seconds from tika metadata");
         return (int) Double.parseDouble(metadata.get("xmpDM:duration"));
     }
 
-    private Metadata getTikaMetadataFromTrackInputStream(InputStream inputStream) throws IOException {
+    private Metadata getTikaMetadataFromMultipartFile(MultipartFile trackFile) {
+
         log.info("Parsing tika metadata from track");
 
-        try {
+        try (InputStream inputStream = trackFile.getInputStream()) {
             BodyContentHandler handler = new BodyContentHandler();
             Metadata metadata = new Metadata();
             ParseContext parseContext = new ParseContext();
@@ -145,45 +120,60 @@ public class TrackService {
             return metadata;
         } catch (TikaException | SAXException e) {
             throw new ParseTrackException("Failed to parse track metadata");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public TrackInfo getTrackInfoById(UUID id) {
+    private byte[] getBytesFromMultipartFile(MultipartFile multipartFile) {
+        try {
+            return multipartFile.getBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Track getTrackById(UUID id) {
         log.info("Getting track info by Id: {}", id);
-        return trackRepository
+        Track track = trackRepository
                 .findById(id)
-                .orElseThrow(() -> new TrackNotFoundException("Track wasn't found: " + id));
+                .orElseThrow(() -> new TrackNotFoundException("Track not found: " + id));
+
+        byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), track.getId().toString());
+        track.setBytes(bytes);
+
+        return track;
     }
 
-    public UUID saveTrackInfo(TrackInfo track) {
-        log.info("Saving track info to db: {}", track);
-        return trackRepository.save(track).getId();
+    public void saveTrackToDb(Track track) {
+        log.info("Saving track to db: {}", track);
+        trackRepository.save(track);
     }
 
-    public void saveTrackS3(TrackS3 track) {
+    public void saveTrackToS3(Track track) {
         log.info("Saving track to S3: {}", track);
 
-        Map<String, String> metadata = convertTrackMetadataToMap(track.trackMetadata());
+        Map<String, String> metadata = Map.of(
+                "name", track.getName(),
+                "seconds", track.getSeconds().toString(),
+                "timestamp", track.getTimestamp().toString()
+        );
 
-        s3Service.putObject(s3Buckets.getTracks(), track.id().toString(), track.bytes(), metadata, null);
+        s3Service.putObject(s3Buckets.getTracks(),
+                track.getId().toString(),
+                track.getBytes(),
+                metadata);
     }
 
-    private Map<String, String> convertTrackMetadataToMap(TrackMetadata metadata) {
-        log.info("Converting track metadata to Map<String, String>");
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules();
-        return mapper.convertValue(metadata, new TypeReference<>() {
-        });
-    }
-
-    private TrackMetadata convertS3ObjectToTrackMetadata(S3Object s3Object) {
-        log.info("Converting S3Object to TrackMetadata");
+    private Track convertS3ObjectToTrack(S3Object s3Object) {
+        log.info("Converting S3Object to Track");
         Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
 
-        String name = metadata.get("name");
-        Integer seconds = Integer.parseInt(metadata.get("seconds"));
-        Instant timestamp = s3Object.lastModified();
-
-        return new TrackMetadata(name, seconds, timestamp);
+        return Track.builder()
+                .id(UUID.fromString(s3Object.key()))
+                .name(metadata.get("name"))
+                .seconds(Integer.parseInt(metadata.get("seconds")))
+                .timestamp(Instant.parse(metadata.get("timestamp")))
+                .build();
     }
 }

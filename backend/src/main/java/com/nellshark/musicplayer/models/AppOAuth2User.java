@@ -28,7 +28,7 @@ public class AppOAuth2User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "track_id", referencedColumnName = "id")
     )
-    private Set<TrackInfo> favoriteTracks;
+    private Set<Track> favoriteTracks;
 
     public AppOAuth2User(Integer id) {
         this.id = id;

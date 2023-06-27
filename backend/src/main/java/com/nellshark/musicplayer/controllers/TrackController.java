@@ -1,6 +1,6 @@
 package com.nellshark.musicplayer.controllers;
 
-import com.nellshark.musicplayer.models.TrackInfo;
+import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +34,12 @@ public class TrackController {
     public Map<String, Object> getTracks(
             @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(value = "filter", required = false) String filter) {
-        return trackService.getTrackInfoListByPage(pageable, filter);
+        return trackService.getTracksByPage(pageable, filter);
     }
 
     @GetMapping("/{id}")
-    public TrackInfo getTrackById(@PathVariable("id") UUID id) {
-        return trackService.getTrackInfoById(id);
+    public Track getTrackById(@PathVariable("id") UUID id) {
+        return trackService.getTrackById(id);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

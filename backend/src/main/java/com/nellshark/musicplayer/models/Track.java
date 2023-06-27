@@ -5,46 +5,50 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "tracks")
 @Data
-@NoArgsConstructor
-public class TrackInfo {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
+public class Track {
     @Id
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "VARCHAR(36)")
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
+    @NonNull
     private String name;
 
     @Column(name = "seconds", nullable = false, columnDefinition = "INT")
+    @NonNull
     private Integer seconds;
 
     @Column(name = "timestamp", nullable = false)
-    private Instant timestamp;
+    @Builder.Default
+    private Instant timestamp = Instant.now();
+
+    @Transient
+    @ToString.Exclude
+    private byte[] bytes;
 
     @ManyToMany(mappedBy = "favoriteTracks")
     private Set<AppOAuth2User> users;
-
-    @Builder
-    public TrackInfo(UUID id, String name, Integer seconds, Instant timestamp) {
-        this.id = Objects.isNull(id) ? UUID.randomUUID() : id;
-        this.name = name;
-        this.seconds = seconds;
-        this.timestamp = timestamp;
-        this.users = new HashSet<>();
-    }
 }
+

@@ -23,14 +23,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //    @formatter:off
         return http
-                .cors().and()
+                .cors()
+                    .and()
                 .csrf()
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(csrfTokenRequestHandler)
                     .and()
                 .authorizeHttpRequests()
                     .anyRequest()
-                    .permitAll().and()
+                    .permitAll()
+                    .and()
                 .oauth2Login()
                     .userInfoEndpoint()
                     .userService(oauth2UserService)
@@ -40,7 +42,7 @@ public class SecurityConfig {
                 .logout()
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
-                    .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
+                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
                     .logoutSuccessUrl("http://localhost:3000")
                     .and()
                 .build();

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nellshark.musicplayer.models.TrackContentType.MPEG;
+import static com.nellshark.musicplayer.services.TrackService.TRACK_CONTENT_TYPE;
 
 @Configuration
 @RequiredArgsConstructor
@@ -30,34 +30,30 @@ public class LoadDatabase {
         return args -> {
             trackService.initTracksTable();
 
-            if (!trackService.getTrackInfoList().isEmpty()) return;
-
             // First init
-            List<File> files = getSampleTrackFiles();
-            files.stream()
-                    .map(file -> {
-                        try {
-                            return new MockMultipartFile(
-                                    file.getName(),
-                                    file.getName(),
-                                    MPEG.getType(),
-                                    new FileInputStream(file));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .forEach(multipartFile -> trackService.uploadTrack(multipartFile.getName(), multipartFile));
+            if (!trackService.getAllTracks().isEmpty()) return;
+            List<MockMultipartFile> multipartFiles = getSampleTrackFiles();
+            multipartFiles.forEach(multipartFile -> trackService.uploadTrack(multipartFile.getName(), multipartFile));
         };
     }
 
-    private List<File> getSampleTrackFiles() {
+    private List<MockMultipartFile> getSampleTrackFiles() {
         try {
-            List<File> files = new ArrayList<>();
             Resource[] resources = applicationContext.getResources("classpath:samples/*.mp3");
-            for (Resource resource : resources) {
-                files.add(resource.getFile());
+            List<File> files = new ArrayList<>();
+            for (Resource resource : resources) files.add(resource.getFile());
+
+            List<MockMultipartFile> multipartFiles = new ArrayList<>();
+            for (File file : files) {
+                MockMultipartFile multipartFile = new MockMultipartFile(
+                        file.getName(),
+                        file.getName(),
+                        TRACK_CONTENT_TYPE,
+                        new FileInputStream(file));
+                multipartFiles.add(multipartFile);
             }
-            return files;
+
+            return multipartFiles;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
