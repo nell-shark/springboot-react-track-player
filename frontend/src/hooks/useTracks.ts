@@ -1,3 +1,5 @@
+import { TracksPage } from '@typings/track';
+
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -6,8 +8,6 @@ import { TRACKS } from '@data/queryKeys';
 import { trackService } from '@services/trackService';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
-
-import { TracksPage } from '../typings/track';
 
 export function useTracks() {
   const [searchParams] = useSearchParams();

@@ -45,7 +45,7 @@ public class TrackService {
         List<S3Object> s3Objects = s3Service.getS3ObjectsFromBucket(s3Buckets.getTracks());
         s3Objects.stream()
                 .map(this::convertS3ObjectToTrack)
-                .forEach(trackRepository::save);
+                .forEach(this::saveTrackToDb);
     }
 
     public List<Track> getAllTracks() {
@@ -61,9 +61,9 @@ public class TrackService {
                 : trackRepository.search(filter, pageable);
 
         return Map.of(
-                "tracks", page.getContent(),
                 "currentPage", page.getNumber() + 1,
-                "hasNext", page.hasNext()
+                "hasNext", page.hasNext(),
+                "tracks", page.getContent()
         );
     }
 
@@ -87,8 +87,8 @@ public class TrackService {
                 .bytes(trackBytes)
                 .build();
 
-        saveTrackToDb(track);
         saveTrackToS3(track);
+        saveTrackToDb(track);
     }
 
     private void checkTrackFileIsValid(MultipartFile trackFile) {
@@ -107,7 +107,6 @@ public class TrackService {
     }
 
     private Metadata getTikaMetadataFromMultipartFile(MultipartFile trackFile) {
-
         log.info("Parsing tika metadata from track");
 
         try (InputStream inputStream = trackFile.getInputStream()) {

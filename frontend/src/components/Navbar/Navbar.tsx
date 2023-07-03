@@ -16,6 +16,7 @@ import { userService } from '@services/userService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
 export function Navbar() {
   const [login, setLogin] = useState<string>('');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
@@ -40,7 +41,7 @@ export function Navbar() {
     <NavbarBs id='navigation' collapseOnSelect expand='lg' bg='dark' variant='dark' className='position-fixed w-100'>
       <Container>
         <NavbarBs.Brand as={Link} to='/'>
-          MusicPlayer
+          TrackPlayer
         </NavbarBs.Brand>
         <NavbarBs.Toggle aria-controls='responsive-navbar-nav' />
         <NavbarBs.Collapse id='responsive-navbar-nav'>

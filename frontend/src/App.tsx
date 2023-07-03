@@ -1,9 +1,9 @@
 import { Container } from 'react-bootstrap';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { AudioPlayer } from '@components/AudioPlayer';
 import { Footer } from '@components/Footer';
 import { Navbar } from '@components/Navbar';
+import { TrackPlayer } from '@components/TrackPlayer';
 
 import { About } from '@pages/About';
 import { NotFound } from '@pages/NotFound';
@@ -23,15 +23,8 @@ export default function App() {
           </Routes>
         </Container>
       </main>
-      <AudioPlayer isActive={true} isPlaying={false} />
+      <TrackPlayer isActive={true} isPlaying={false} />
       <Footer />
     </>
   );
 }
-
-function x() {
-  const v = 5;
-  console.log(v);
-}
-
-x();

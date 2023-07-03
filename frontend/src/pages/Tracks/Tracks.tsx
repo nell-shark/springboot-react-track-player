@@ -1,11 +1,11 @@
+import { Page } from '@typings/page';
+
 import { useTitle } from '@hooks/useTitle';
 import { useTracks } from '@hooks/useTracks';
 
 import { AddTrack } from '@pages/Tracks/AddTrack';
 import { ShowMore } from '@pages/Tracks/ShowMore';
 import { TrackList } from '@pages/Tracks/TrackList';
-
-import { Page } from '../../typings/page';
 
 export interface TracksProps extends Page {}
 

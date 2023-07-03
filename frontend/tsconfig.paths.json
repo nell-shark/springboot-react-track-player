@@ -14,8 +14,8 @@
       "@hooks/*": [
         "./hooks/*"
       ],
-      "@interfaces/*": [
-        "./interfaces/*"
+      "@typings/*": [
+        "./typings/*"
       ],
       "@pages/*": [
         "./pages/*"

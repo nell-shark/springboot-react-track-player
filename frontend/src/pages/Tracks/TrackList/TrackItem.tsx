@@ -1,3 +1,5 @@
+import { Track } from '@typings/track';
+
 import { Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 
@@ -8,11 +10,8 @@ import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
 import { faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { TrackInfo } from '../../../typings/track';
-
-
 export interface TrackItemProps {
-  track: TrackInfo;
+  track: Track;
   favorite: boolean;
 }
 

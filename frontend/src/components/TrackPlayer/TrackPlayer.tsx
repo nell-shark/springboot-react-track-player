@@ -3,12 +3,12 @@ import { Button, Container } from 'react-bootstrap';
 import { faBackwardStep, faForwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface AudioPlayerProps {
+interface TrackPlayerProps {
   isActive: boolean;
   isPlaying: boolean;
 }
 
-export function AudioPlayer({ isActive, isPlaying }: AudioPlayerProps) {
+export function TrackPlayer({ isActive, isPlaying }: TrackPlayerProps) {
   return (
     <div className='fixed-bottom w-100 bg-light border-top'>
       <Container className='d-flex align-items-center'>

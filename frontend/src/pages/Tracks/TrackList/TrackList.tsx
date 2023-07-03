@@ -2,11 +2,11 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import { TrackItem } from '@pages/Tracks/TrackList/TrackItem';
 
-import { TrackInfo } from '../../../typings/track';
+import { Track } from '../../../typings/track';
 
 interface TrackListProps {
   isLoading: boolean;
-  tracks: TrackInfo[];
+  tracks: Track[];
   error?: Error;
 }
 

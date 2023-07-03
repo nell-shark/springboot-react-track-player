@@ -1,10 +1,10 @@
 import { axiosInstance } from '@services/axiosInstance';
 
-import { UserInfo } from '../typings/userInfo';
+import { User } from '../typings/user';
 
 class UserService {
   public getUserInfo() {
-    return axiosInstance.get<UserInfo>('/api/v1/users/oauth2/info');
+    return axiosInstance.get<User>('/api/v1/users/oauth2/info');
   }
 }
 
