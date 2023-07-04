@@ -21,10 +21,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     console.error('Uncaught error:', error, errorInfo);
   }
 
-  render(): React.ReactNode {
-    if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
-    }
+  render(): ReactNode {
+    if (this.state.hasError) return <h1>Something went wrong.</h1>;
 
     return this.props.children;
   }

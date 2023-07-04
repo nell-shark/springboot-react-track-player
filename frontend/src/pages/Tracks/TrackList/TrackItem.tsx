@@ -3,8 +3,12 @@ import { Track } from '@typings/track';
 import { Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 
+import { useAppDispatch } from '@hooks/redux';
+
 import { axiosInstance } from '@services/axiosInstance';
 import { trackService } from '@services/trackService';
+
+import { playTrack } from '@store/slices';
 
 import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
 import { faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
@@ -16,6 +20,8 @@ export interface TrackItemProps {
 }
 
 export function TrackItem({ track, favorite }: TrackItemProps) {
+  const dispatch = useAppDispatch();
+
   async function addFavoriteTrackToUser() {
     await axiosInstance.post('/api/v1/users/oauth2/favorite/track', {
       trackId: track.id
@@ -26,8 +32,8 @@ export function TrackItem({ track, favorite }: TrackItemProps) {
     console.log('item clicked');
     const { data } = await trackService.getTrackById(track.id);
     console.log(data.id);
-    let audio = new Audio('http://streaming.tdiradio.com:8000/house.mp3');
-    await audio.play();
+
+    dispatch(playTrack(data.id));
   }
 
   return (

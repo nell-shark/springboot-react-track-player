@@ -1,38 +1,38 @@
 #navigation {
-    z-index: 999;
+  z-index: 999;
 }
 
 main {
-    padding-top: 100px;
+  padding-top: 100px;
 }
 
 .sign-in {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .avatar {
-    width: 19px;
-    height: 19px;
+  width: 19px;
+  height: 19px;
 }
 
 .card {
-    min-width: 200px;
-    min-height: 260px;
-    transition: translate ease-in-out 100ms, box-shadow ease-in-out 100ms;
+  min-width: 200px;
+  min-height: 260px;
+  transition: translate ease-in-out 100ms, box-shadow ease-in-out 100ms;
 }
 
 .card:hover {
-    translate: 0 -5px;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
+  translate: 0 -5px;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .show-more,
 .add-track {
-    width: 107px;
-    height: 40px;
+  width: 107px;
+  height: 40px;
 }
 
 footer {
-    padding-bottom: 60px;
-    padding-top: 10px;
+  padding-bottom: 60px;
+  padding-top: 10px;
 }

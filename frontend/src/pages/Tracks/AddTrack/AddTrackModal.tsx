@@ -17,7 +17,7 @@ interface AddTrackModalProps {
 }
 
 export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
-  const trackNameRef = useRef<HTMLInputElement>(null);
+  const trackNameRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const {
@@ -62,7 +62,7 @@ export function AddTrackModal({ show, handleClose }: AddTrackModalProps) {
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
           <Form.Control type='text' placeholder='Name' className='mb-2' ref={trackNameRef} />
-          <Form.Control type='file' className='mb-2' accept='audio/mpeg, audio/mp3' onChange={handleChange} />
+          <Form.Control type='file' className='mb-2' accept='audio/mpeg' onChange={handleChange} />
         </Modal.Body>
         <Modal.Footer>
           {isError && <p>{error.message}</p>}

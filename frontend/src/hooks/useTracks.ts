@@ -9,6 +9,7 @@ import { trackService } from '@services/trackService';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 
+
 export function useTracks() {
   const [searchParams] = useSearchParams();
 

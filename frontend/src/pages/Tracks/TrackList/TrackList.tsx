@@ -1,8 +1,8 @@
+import { Track } from '@typings/track';
+
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import { TrackItem } from '@pages/Tracks/TrackList/TrackItem';
-
-import { Track } from '../../../typings/track';
 
 interface TrackListProps {
   isLoading: boolean;

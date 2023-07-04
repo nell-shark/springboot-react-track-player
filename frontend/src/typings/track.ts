@@ -10,8 +10,10 @@ export type TracksPage = {
   tracks: Track[];
 };
 
-export type TrackPlayer = {
+export type TrackPlayerState = {
   hasPrevious: boolean;
-  track?: Track;
   hasNext: boolean;
+  tracks: Track[];
+  trackId?: string;
+  status: 'disabled' | 'playing' | 'pause';
 };

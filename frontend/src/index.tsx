@@ -10,7 +10,7 @@ import { store } from '@store/store';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import App from './App';
+import { App } from './App';
 import './index.css';
 
 

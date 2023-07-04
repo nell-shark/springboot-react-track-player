@@ -9,7 +9,7 @@ import { About } from '@pages/About';
 import { NotFound } from '@pages/NotFound';
 import { Tracks } from '@pages/Tracks';
 
-export default function App() {
+export function App() {
   return (
     <>
       <Navbar />
@@ -23,7 +23,7 @@ export default function App() {
           </Routes>
         </Container>
       </main>
-      <TrackPlayer isActive={true} isPlaying={false} />
+      <TrackPlayer />
       <Footer />
     </>
   );
