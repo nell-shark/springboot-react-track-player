@@ -1,8 +1,8 @@
+import { Track, TracksPage } from '@typings/track';
+
 import { axiosInstance } from '@services/axiosInstance';
 
-import { Track, TracksPage } from '../typings/track';
-
-export class TrackService {
+class TrackService {
   public getTracks(page: number = 1, filter?: string) {
     return axiosInstance.get<TracksPage>('/api/v1/tracks', {
       params: { page, filter }

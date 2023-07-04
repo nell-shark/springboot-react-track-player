@@ -21,6 +21,7 @@
     "^@interfaces/(.*)$",
     "^@pages/(.*)$",
     "^@services/(.*)$",
+    "^@store/(.*)$",
     "^@fortawesome/(.*)$",
     "^@tanstack/(.*)$",
     "^[./]"

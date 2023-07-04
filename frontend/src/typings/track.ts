@@ -9,3 +9,9 @@ export type TracksPage = {
   hasNext: boolean;
   tracks: Track[];
 };
+
+export type TrackPlayer = {
+  hasPrevious: boolean;
+  track?: Track;
+  hasNext: boolean;
+};

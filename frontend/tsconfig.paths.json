@@ -14,14 +14,17 @@
       "@hooks/*": [
         "./hooks/*"
       ],
-      "@typings/*": [
-        "./typings/*"
-      ],
       "@pages/*": [
         "./pages/*"
       ],
       "@services/*": [
         "./services/*"
+      ],
+      "@store/*": [
+        "./store/*"
+      ],
+      "@typings/*": [
+        "./typings/*"
       ]
     }
   }
