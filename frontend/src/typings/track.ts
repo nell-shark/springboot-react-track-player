@@ -1,19 +1,12 @@
-export type Track = {
+export interface Track {
   id: string;
   name: string;
   seconds: number;
-};
+  bytes?: Blob;
+}
 
-export type TracksPage = {
+export interface TracksPage {
   currentPage: number;
   hasNext: boolean;
   tracks: Track[];
-};
-
-export type TrackPlayerState = {
-  hasPrevious: boolean;
-  hasNext: boolean;
-  tracks: Track[];
-  trackId?: string;
-  status: 'disabled' | 'playing' | 'pause';
-};
+}

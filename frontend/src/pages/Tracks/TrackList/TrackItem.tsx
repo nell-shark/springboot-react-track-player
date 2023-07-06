@@ -6,9 +6,6 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { useAppDispatch } from '@hooks/redux';
 
 import { axiosInstance } from '@services/axiosInstance';
-import { trackService } from '@services/trackService';
-
-import { playTrack } from '@store/slices';
 
 import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
 import { faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
@@ -29,11 +26,12 @@ export function TrackItem({ track, favorite }: TrackItemProps) {
   }
 
   async function play() {
-    console.log('item clicked');
-    const { data } = await trackService.getTrackById(track.id);
-    console.log(data.id);
-
-    dispatch(playTrack(data.id));
+    // dispatch(playTrack(track));
+    // const audio = new Audio();
+    // const { data } = await trackService.testTrack(track.id);
+    // const audioBlob = new Blob([data.bytes!], { type: 'audio/mp3' });
+    // audio.src = window.URL.createObjectURL(audioBlob);
+    // await audio.play();
   }
 
   return (

@@ -14,7 +14,6 @@
   "useTabs": false,
   "importOrder": [
     "^react",
-    "^@assets/(.*)$",
     "^@components/(.*)$",
     "^@data/(.*)$",
     "^@hooks/(.*)$",
@@ -23,7 +22,6 @@
     "^@services/(.*)$",
     "^@store/(.*)$",
     "^@fortawesome/(.*)$",
-    "^@tanstack/(.*)$",
     "^[./]"
   ],
   "importOrderSeparation": true,

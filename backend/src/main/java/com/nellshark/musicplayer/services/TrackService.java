@@ -34,10 +34,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class TrackService {
+    public static final String TRACK_CONTENT_TYPE = "audio/mpeg";
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
-    public static final String TRACK_CONTENT_TYPE = "audio/mpeg";
 
     public void initTracksTable() {
         log.info("Init tracks table");

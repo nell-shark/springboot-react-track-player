@@ -7,12 +7,12 @@ import { TrackItem } from '@pages/Tracks/TrackList/TrackItem';
 interface TrackListProps {
   isLoading: boolean;
   tracks: Track[];
-  error?: Error;
+  error?: string;
 }
 
 export function TrackList({ isLoading, tracks, error }: TrackListProps) {
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error.message}</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <ListGroup>

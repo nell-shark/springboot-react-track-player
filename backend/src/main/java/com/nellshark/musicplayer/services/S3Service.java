@@ -44,7 +44,10 @@ public class S3Service {
     public byte[] getObject(String bucketName, String key) {
         log.info("Retrieving file from S3 - bucket/key: {}/{}", bucketName, key);
 
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(key).build();
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
         ResponseInputStream<GetObjectResponse> res = s3Client.getObject(getObjectRequest);
 
         try {
@@ -57,7 +60,9 @@ public class S3Service {
     public List<S3Object> getS3ObjectsFromBucket(String bucketName) {
         log.info("Getting all objects from bucket - {}", bucketName);
 
-        ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucketName).build();
+        ListObjectsV2Request request = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .build();
         ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
         return response

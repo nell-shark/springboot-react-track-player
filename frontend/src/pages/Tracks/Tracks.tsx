@@ -1,27 +1,23 @@
 import { Page } from '@typings/page';
 
+import { useAppSelector } from '@hooks/redux';
 import { useTitle } from '@hooks/useTitle';
-import { useTracks } from '@hooks/useTracks';
 
 import { AddTrack } from '@pages/Tracks/AddTrack';
-import { ShowMore } from '@pages/Tracks/ShowMore';
 import { TrackList } from '@pages/Tracks/TrackList';
 
 export interface TracksProps extends Page {}
 
 export function Tracks({ title }: TracksProps) {
-  const { data, isLoading, isFetching, error, fetchNextPage, hasNextPage } = useTracks();
   useTitle(title);
+
+  const tracks = useAppSelector(state => state.trackPlayer.trackList);
 
   return (
     <>
-      <TrackList
-        isLoading={isLoading}
-        tracks={data?.pages.flatMap(value => value.tracks) || []}
-        error={error || undefined}
-      />
+      <TrackList isLoading={false} tracks={tracks} error={''} />
       <div className='mt-4 d-flex justify-content-center gap-3'>
-        <ShowMore isFetching={isFetching} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
+        {/*<ShowMore isFetching={isFetching} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />*/}
         <AddTrack />
       </div>
     </>

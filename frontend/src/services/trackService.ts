@@ -13,6 +13,12 @@ class TrackService {
     return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
   }
 
+  public testTrack(id: string) {
+    return axiosInstance.get<ArrayBuffer>(`/api/v1/tracks/${id}`, {
+      responseType: 'arraybuffer'
+    });
+  }
+
   public uploadTrack(name: string, file: File) {
     return axiosInstance.post(
       '/api/v1/tracks',

@@ -1,6 +1,5 @@
 package com.nellshark.musicplayer.controllers;
 
-import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,21 +31,24 @@ public class TrackController {
     private final TrackService trackService;
 
     @GetMapping
-    public Map<String, Object> getTracks(
-            @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(value = "filter", required = false) String filter) {
+    public Map<String, Object> getTracks(@PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "filter", required = false) String filter) {
         return trackService.getTracksByPage(pageable, filter);
     }
 
+    //    @GetMapping("/{id}")
+//    public Track getTrackById(@PathVariable("id") UUID id) {
+//        return trackService.getTrackById(id);
+//    }
     @GetMapping("/{id}")
-    public Track getTrackById(@PathVariable("id") UUID id) {
-        return trackService.getTrackById(id);
+    public ResponseEntity<byte[]> getTrackById(@PathVariable("id") UUID id) {
+        byte[] data = trackService.getTrackById(id).getBytes();
+
+        return ResponseEntity.ok().body(data);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadTrack(@RequestParam("name") @NotBlank String name,
-                            @RequestParam("file") @NotNull MultipartFile file) {
+    public void uploadTrack(@RequestParam("name") @NotBlank String name, @RequestParam("file") @NotNull MultipartFile file) {
         trackService.uploadTrack(name, file);
     }
 }
