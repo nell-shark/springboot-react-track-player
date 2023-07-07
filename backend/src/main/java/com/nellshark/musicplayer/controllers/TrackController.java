@@ -1,5 +1,7 @@
 package com.nellshark.musicplayer.controllers;
 
+import com.nellshark.musicplayer.dto.TrackDTO;
+import com.nellshark.musicplayer.models.TrackListPage;
 import com.nellshark.musicplayer.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -31,24 +31,22 @@ public class TrackController {
     private final TrackService trackService;
 
     @GetMapping
-    public Map<String, Object> getTracks(@PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "filter", required = false) String filter) {
-        return trackService.getTracksByPage(pageable, filter);
+    public ResponseEntity<TrackListPage> getTrackListPage(
+            @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "filter", required = false) String filter) {
+        TrackListPage page = trackService.getTrackListPage(pageable, filter);
+        return ResponseEntity.ok(page);
     }
 
-    //    @GetMapping("/{id}")
-//    public Track getTrackById(@PathVariable("id") UUID id) {
-//        return trackService.getTrackById(id);
-//    }
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getTrackById(@PathVariable("id") UUID id) {
-        byte[] data = trackService.getTrackById(id).getBytes();
-
-        return ResponseEntity.ok().body(data);
+    public ResponseEntity<TrackDTO> getTrackById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok().body(trackService.getTrackDTOById(id));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void uploadTrack(@RequestParam("name") @NotBlank String name, @RequestParam("file") @NotNull MultipartFile file) {
+    public ResponseEntity<Void> uploadTrack(@RequestParam("name") @NotBlank String name,
+                                            @RequestParam("file") @NotNull MultipartFile file) {
         trackService.uploadTrack(name, file);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

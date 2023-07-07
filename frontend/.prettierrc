@@ -17,10 +17,11 @@
     "^@components/(.*)$",
     "^@data/(.*)$",
     "^@hooks/(.*)$",
-    "^@interfaces/(.*)$",
     "^@pages/(.*)$",
     "^@services/(.*)$",
     "^@store/(.*)$",
+    "^@typings/(.*)$",
+    "^@utils/(.*)$",
     "^@fortawesome/(.*)$",
     "^[./]"
   ],

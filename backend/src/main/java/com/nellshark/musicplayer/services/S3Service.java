@@ -26,14 +26,14 @@ import java.util.Map;
 public class S3Service {
     private final S3Client s3Client;
 
-    public void putObject(String bucketName,
+    public void putObject(String bucket,
                           String key,
                           byte[] file,
                           @Nullable Map<String, String> metadata) {
-        log.info("Uploading track to S3 - bucket/key: {}/{}", bucketName, key);
+        log.info("Uploading track to S3 - bucket/key: {}/{}", bucket, key);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
+                .bucket(bucket)
                 .key(key)
                 .metadata(metadata)
                 .build();
@@ -41,11 +41,11 @@ public class S3Service {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file));
     }
 
-    public byte[] getObject(String bucketName, String key) {
-        log.info("Retrieving file from S3 - bucket/key: {}/{}", bucketName, key);
+    public byte[] getObject(String bucket, String key) {
+        log.info("Retrieving file from S3 - bucket/key: {}/{}", bucket, key);
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
+                .bucket(bucket)
                 .key(key)
                 .build();
         ResponseInputStream<GetObjectResponse> res = s3Client.getObject(getObjectRequest);
@@ -57,11 +57,11 @@ public class S3Service {
         }
     }
 
-    public List<S3Object> getS3ObjectsFromBucket(String bucketName) {
-        log.info("Getting all objects from bucket - {}", bucketName);
+    public List<S3Object> getS3ObjectsFromBucket(String bucket) {
+        log.info("Getting all objects from bucket - {}", bucket);
 
         ListObjectsV2Request request = ListObjectsV2Request.builder()
-                .bucket(bucketName)
+                .bucket(bucket)
                 .build();
         ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
@@ -71,11 +71,11 @@ public class S3Service {
                 .toList();
     }
 
-    public Map<String, String> getMetadata(String bucketName, String key) {
-        log.info("Getting metadata - bucket/key {}/{}", bucketName, key);
+    public Map<String, String> getMetadata(String bucket, String key) {
+        log.info("Getting metadata - bucket/key {}/{}", bucket, key);
 
         HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
-                .bucket(bucketName)
+                .bucket(bucket)
                 .key(key)
                 .build();
 

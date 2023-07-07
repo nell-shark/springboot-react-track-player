@@ -1,11 +1,14 @@
 package com.nellshark.musicplayer.services;
 
 import com.nellshark.musicplayer.configs.S3Buckets;
+import com.nellshark.musicplayer.dto.TrackDTO;
 import com.nellshark.musicplayer.exceptions.FileIsEmptyException;
 import com.nellshark.musicplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.musicplayer.exceptions.ParseTrackException;
 import com.nellshark.musicplayer.exceptions.TrackNotFoundException;
+import com.nellshark.musicplayer.mappers.TrackDTOMapper;
 import com.nellshark.musicplayer.models.Track;
+import com.nellshark.musicplayer.models.TrackListPage;
 import com.nellshark.musicplayer.repositories.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,7 @@ public class TrackService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
+    private final TrackDTOMapper trackDTOMapper;
 
     public void initTracksTable() {
         log.info("Init tracks table");
@@ -53,17 +57,17 @@ public class TrackService {
         return trackRepository.findAll();
     }
 
-    public Map<String, Object> getTracksByPage(Pageable pageable, String filter) {
+    public TrackListPage getTrackListPage(Pageable pageable, String filter) {
         log.info("Getting tracks by page: {}", pageable.getPageNumber());
 
         Page<Track> page = StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable)
                 : trackRepository.search(filter, pageable);
 
-        return Map.of(
-                "currentPage", page.getNumber() + 1,
-                "hasNext", page.hasNext(),
-                "tracks", page.getContent()
+        return new TrackListPage(
+                page.getNumber() + 1,
+                page.hasNext(),
+                page.getContent()
         );
     }
 
@@ -132,8 +136,20 @@ public class TrackService {
         }
     }
 
+    public TrackDTO getTrackDTOById(UUID id) {
+        log.info("Getting track dto by Id: {}", id);
+        Track track = trackRepository
+                .findById(id)
+                .orElseThrow(() -> new TrackNotFoundException("Track not found: " + id));
+
+        byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), track.getId().toString());
+        track.setBytes(bytes);
+
+        return trackDTOMapper.apply(track);
+    }
+
     public Track getTrackById(UUID id) {
-        log.info("Getting track info by Id: {}", id);
+        log.info("Getting track by Id: {}", id);
         Track track = trackRepository
                 .findById(id)
                 .orElseThrow(() -> new TrackNotFoundException("Track not found: " + id));

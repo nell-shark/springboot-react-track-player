@@ -1,10 +1,10 @@
-import { Track, TracksPage } from '@typings/track';
-
 import { axiosInstance } from '@services/axiosInstance';
 
+import { Track, TrackListPage } from '@typings/track';
+
 class TrackService {
-  public getTracks(page: number = 1, filter?: string) {
-    return axiosInstance.get<TracksPage>('/api/v1/tracks', {
+  public getTrackListPage(page: number = 1, filter?: string) {
+    return axiosInstance.get<TrackListPage>('/api/v1/tracks', {
       params: { page, filter }
     });
   }
@@ -13,16 +13,10 @@ class TrackService {
     return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
   }
 
-  public testTrack(id: string) {
-    return axiosInstance.get<ArrayBuffer>(`/api/v1/tracks/${id}`, {
-      responseType: 'arraybuffer'
-    });
-  }
-
-  public uploadTrack(name: string, file: File) {
+  public uploadTrack(name: string, track: File) {
     return axiosInstance.post(
       '/api/v1/tracks',
-      { name, file },
+      { name, track },
       {
         headers: {
           'Content-Type': 'multipart/form-data'

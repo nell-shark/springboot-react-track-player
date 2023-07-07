@@ -1,12 +1,11 @@
 export interface Track {
   id: string;
   name: string;
-  seconds: number;
-  bytes?: Blob;
+  bytes?: string;
 }
 
-export interface TracksPage {
-  currentPage: number;
+export interface TrackListPage {
+  page: number;
   hasNext: boolean;
   tracks: Track[];
 }

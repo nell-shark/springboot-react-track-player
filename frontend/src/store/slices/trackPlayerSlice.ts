@@ -1,47 +1,85 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { trackService } from '@services/trackService';
+
 import { Track } from '@typings/track';
 
 interface TrackPlayerState {
-  hasPrevious: boolean;
-  hasNext: boolean;
+  disabled: boolean;
+  page: number;
+  isLoadingPage: boolean;
+  hasNextPage: boolean;
   trackList: Track[];
+  hasPrevTrack: boolean;
+  hasNextTrack: boolean;
   track?: Track;
-  status: 'disabled' | 'play' | 'pause';
+  playing: boolean;
+  error?: string;
 }
 
 const initialState: TrackPlayerState = {
-  hasPrevious: false,
-  track: undefined,
-  hasNext: false,
-  status: 'disabled',
-  trackList: []
+  disabled: true,
+  page: 1,
+  isLoadingPage: true,
+  hasNextPage: false,
+  trackList: [],
+  hasPrevTrack: false,
+  hasNextTrack: false,
+  playing: false
 };
+
+export const getListTrackPage = createAsyncThunk('trackPlayer/getListTrackPage', async (page: number, thunkAPI) => {
+  try {
+    const response = await trackService.getTrackListPage(page);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return thunkAPI.rejectWithValue(error);
+  }
+});
 
 const trackPlayer = createSlice({
   name: 'trackPlayer',
   initialState,
   reducers: {
     playTrack(state, action: PayloadAction<Track>) {
-      state.status = 'play';
+      state.playing = true;
+      state.disabled = false;
       state.track = action.payload;
     },
     pauseTrack(state) {
-      state.status = 'pause';
+      state.playing = false;
     },
-    previousTrack(state) {
+    prevTrack(state) {
       let index = state.trackList.indexOf(state.track!);
-      state.hasPrevious = index > 1;
-      state.track = state.trackList.at(index - Number(state.hasPrevious));
-      state.status = 'play';
+      state.hasPrevTrack = index > 1;
+      state.track = state.trackList.at(index - Number(state.hasPrevTrack));
+      state.playing = true;
     },
     nextTrack(state) {
       let index = state.trackList.indexOf(state.track!);
-      state.hasNext = state.trackList.length > index - 1;
-      state.track = state.trackList.at(index + Number(state.hasNext));
-      state.status = 'play';
+      state.hasNextTrack = state.trackList.length > index - 1;
+      state.track = state.trackList.at(index + Number(state.hasNextTrack));
+      state.playing = true;
     }
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(getListTrackPage.pending, (state, action) => {
+        state.isLoadingPage = true;
+      })
+      .addCase(getListTrackPage.fulfilled, (state, action) => {
+        state.isLoadingPage = false;
+        state.trackList = action.payload.tracks;
+        state.page = action.payload.page;
+        state.hasNextPage = action.payload.hasNext;
+      })
+      .addCase(getListTrackPage.rejected, (state, action) => {
+        state.isLoadingPage = false;
+        state.error = action.error.message;
+      });
   }
 });
 
 export const trackPlayerReducer = trackPlayer.reducer;
-export const { playTrack, pauseTrack, previousTrack, nextTrack } = trackPlayer.actions;
+export const { playTrack, pauseTrack, prevTrack, nextTrack } = trackPlayer.actions;
