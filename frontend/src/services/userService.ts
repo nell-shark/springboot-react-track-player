@@ -1,6 +1,6 @@
-import { UserState } from '@typings/userState';
-
 import { axiosInstance } from '@services/axiosInstance';
+
+import { UserState } from '@typings/userState';
 
 class UserService {
   public getUserInfo() {

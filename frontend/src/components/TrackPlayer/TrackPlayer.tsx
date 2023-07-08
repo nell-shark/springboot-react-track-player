@@ -7,6 +7,7 @@ import { nextTrack, prevTrack } from '@store/slices';
 import { faBackwardStep, faForwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
 export function TrackPlayer() {
   const dispatch = useAppDispatch();
   const state = useAppSelector(state => state.trackPlayer);
@@ -30,8 +31,7 @@ export function TrackPlayer() {
           <FontAwesomeIcon icon={faBackwardStep} />
         </Button>
         <Button variant='outline-link' className='border-0' onClick={play}>
-          {state.playing && <FontAwesomeIcon icon={faPause} size='2x' />}
-          {!state.playing && <FontAwesomeIcon icon={faPlay} size='2x' />}
+          <FontAwesomeIcon icon={state.playing ? faPause : faPlay} size='2x' />
         </Button>
         <Button variant='outline-link' className='border-0' active={state.hasNextTrack} onClick={next}>
           <FontAwesomeIcon icon={faForwardStep} />

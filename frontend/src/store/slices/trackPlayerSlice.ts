@@ -65,7 +65,7 @@ const trackPlayer = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(getListTrackPage.pending, (state, action) => {
+      .addCase(getListTrackPage.pending, state => {
         state.isLoadingPage = true;
       })
       .addCase(getListTrackPage.fulfilled, (state, action) => {

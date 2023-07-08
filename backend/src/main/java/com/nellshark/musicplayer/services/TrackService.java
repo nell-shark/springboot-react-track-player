@@ -38,6 +38,7 @@ import java.util.UUID;
 @Slf4j
 public class TrackService {
     public static final String TRACK_CONTENT_TYPE = "audio/mpeg";
+
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final TrackRepository trackRepository;
@@ -95,47 +96,6 @@ public class TrackService {
         saveTrackToDb(track);
     }
 
-    private void checkTrackFileIsValid(MultipartFile trackFile) {
-        log.info("Validation track file");
-
-        if (Objects.isNull(trackFile) || trackFile.isEmpty())
-            throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
-
-        if (!Objects.equals(trackFile.getContentType(), TRACK_CONTENT_TYPE))
-            throw new FileMustBeTrackException("File must be a track");
-    }
-
-    private int getTrackDurationFromTikaMetadata(Metadata metadata) {
-        log.info("Getting seconds from tika metadata");
-        return (int) Double.parseDouble(metadata.get("xmpDM:duration"));
-    }
-
-    private Metadata getTikaMetadataFromMultipartFile(MultipartFile trackFile) {
-        log.info("Parsing tika metadata from track");
-
-        try (InputStream inputStream = trackFile.getInputStream()) {
-            BodyContentHandler handler = new BodyContentHandler();
-            Metadata metadata = new Metadata();
-            ParseContext parseContext = new ParseContext();
-            Mp3Parser mp3Parser = new Mp3Parser();
-            mp3Parser.parse(inputStream, handler, metadata, parseContext);
-
-            return metadata;
-        } catch (TikaException | SAXException e) {
-            throw new ParseTrackException("Failed to parse track metadata");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private byte[] getBytesFromMultipartFile(MultipartFile multipartFile) {
-        try {
-            return multipartFile.getBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public TrackDTO getTrackDTOById(UUID id) {
         log.info("Getting track dto by Id: {}", id);
         Track track = trackRepository
@@ -178,6 +138,47 @@ public class TrackService {
                 track.getId().toString(),
                 track.getBytes(),
                 metadata);
+    }
+
+    private void checkTrackFileIsValid(MultipartFile trackFile) {
+        log.info("Validation track file");
+
+        if (Objects.isNull(trackFile) || trackFile.isEmpty())
+            throw new FileIsEmptyException("Cannot upload empty track: " + trackFile);
+
+        if (!Objects.equals(trackFile.getContentType(), TRACK_CONTENT_TYPE))
+            throw new FileMustBeTrackException("File must be a track");
+    }
+
+    private int getTrackDurationFromTikaMetadata(Metadata metadata) {
+        log.info("Getting seconds from tika metadata");
+        return (int) Double.parseDouble(metadata.get("xmpDM:duration"));
+    }
+
+    private Metadata getTikaMetadataFromMultipartFile(MultipartFile trackFile) {
+        log.info("Parsing tika metadata from track");
+
+        try (InputStream inputStream = trackFile.getInputStream()) {
+            BodyContentHandler handler = new BodyContentHandler();
+            Metadata metadata = new Metadata();
+            ParseContext parseContext = new ParseContext();
+            Mp3Parser mp3Parser = new Mp3Parser();
+            mp3Parser.parse(inputStream, handler, metadata, parseContext);
+
+            return metadata;
+        } catch (TikaException | SAXException e) {
+            throw new ParseTrackException("Failed to parse track metadata");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] getBytesFromMultipartFile(MultipartFile multipartFile) {
+        try {
+            return multipartFile.getBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Track convertS3ObjectToTrack(S3Object s3Object) {

@@ -1,8 +1,8 @@
-import { Page } from '@typings/page';
-
 import { useTitle } from '@hooks/useTitle';
 
 import { CardList } from '@pages/About/Card';
+
+import { Page } from '@typings/page';
 
 interface AboutProps extends Page {}
 

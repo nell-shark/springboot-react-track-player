@@ -6,7 +6,6 @@
   "singleQuote": true,
   "jsxSingleQuote": true,
   "printWidth": 120,
-  "proseWrap": "never",
   "quoteProps": "as-needed",
   "requirePragma": false,
   "tabWidth": 2,

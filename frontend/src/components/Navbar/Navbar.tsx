@@ -16,6 +16,7 @@ import { userService } from '@services/userService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
 export function Navbar() {
   const [login, setLogin] = useState<string>('');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
