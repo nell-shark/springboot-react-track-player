@@ -1,24 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 
 import { trackService } from '@services/trackService';
 
 import { Track } from '@typings/track';
 
 interface TrackPlayerState {
-  disabled: boolean;
   page: number;
   isLoadingPage: boolean;
   hasNextPage: boolean;
   trackList: Track[];
   hasPrevTrack: boolean;
   hasNextTrack: boolean;
-  track?: Track;
   playing: boolean;
+  track?: Track;
   error?: string;
 }
 
 const initialState: TrackPlayerState = {
-  disabled: true,
   page: 1,
   isLoadingPage: true,
   hasNextPage: false,
@@ -30,10 +29,9 @@ const initialState: TrackPlayerState = {
 
 export const getListTrackPage = createAsyncThunk('trackPlayer/getListTrackPage', async (page: number, thunkAPI) => {
   try {
-    const response = await trackService.getTrackListPage(page);
-    return response.data;
+    const { data } = await trackService.getTrackListPage(page);
+    return data;
   } catch (error) {
-    console.error(error);
     return thunkAPI.rejectWithValue(error);
   }
 });
@@ -43,23 +41,22 @@ const trackPlayer = createSlice({
   initialState,
   reducers: {
     playTrack(state, action: PayloadAction<Track>) {
-      state.playing = true;
-      state.disabled = false;
+      state.playing = !state.playing;
       state.track = action.payload;
+      const index = state.trackList.findIndex(t => t.id === action.payload.id);
+      state.hasPrevTrack = index > 0;
+      state.hasNextTrack = state.trackList.length - 1 > index;
     },
-    pauseTrack(state) {
-      state.playing = false;
-    },
-    prevTrack(state) {
-      let index = state.trackList.indexOf(state.track!);
-      state.hasPrevTrack = index > 1;
-      state.track = state.trackList.at(index - Number(state.hasPrevTrack));
+    playPrevTrack(state) {
+      const index = state.trackList.indexOf(state.track!);
+      state.hasPrevTrack = index > 0;
+      state.track = state.hasPrevTrack ? state.trackList[index - 1] : undefined;
       state.playing = true;
     },
-    nextTrack(state) {
-      let index = state.trackList.indexOf(state.track!);
-      state.hasNextTrack = state.trackList.length > index - 1;
-      state.track = state.trackList.at(index + Number(state.hasNextTrack));
+    playNextTrack(state) {
+      const index = state.trackList.findIndex(t => state.track!.id === t.id);
+      state.hasNextTrack = state.trackList.length - 1 > index;
+      state.track = state.hasNextTrack ? state.trackList[index + 1] : undefined;
       state.playing = true;
     }
   },
@@ -76,10 +73,10 @@ const trackPlayer = createSlice({
       })
       .addCase(getListTrackPage.rejected, (state, action) => {
         state.isLoadingPage = false;
-        state.error = action.error.message;
+        state.error = action.payload instanceof AxiosError ? action.payload.message : 'Unknown error occurred';
       });
   }
 });
 
 export const trackPlayerReducer = trackPlayer.reducer;
-export const { playTrack, pauseTrack, prevTrack, nextTrack } = trackPlayer.actions;
+export const { playTrack, playPrevTrack, playNextTrack } = trackPlayer.actions;

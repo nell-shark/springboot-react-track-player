@@ -1,22 +1,20 @@
+import { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 
-import { axiosInstance } from '@services/axiosInstance';
-
-import { pauseTrack, playTrack } from '@store/slices';
+import { playNextTrack, playTrack } from '@store/slices';
 
 import { Track } from '@typings/track';
 
-import { pauseAudioElement, playAudioElement } from '@utils/trackUtils';
+import { audio, playAudioElement } from '@utils/trackUtils';
 
 import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
 import { faPause, faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
-export interface TrackItemProps {
+interface TrackItemProps {
   track: Track;
   favorite: boolean;
 }
@@ -26,36 +24,31 @@ export function TrackItem({ track, favorite }: TrackItemProps) {
   const state = useAppSelector(state => state.trackPlayer);
 
   async function addFavoriteTrackToUser() {
-    await axiosInstance.post('/api/v1/users/oauth2/favorite/track', {
-      trackId: track.id
-    });
   }
 
   function play() {
-    if (state.disabled || !state.playing) {
-      dispatch(playTrack(track));
-      playAudioElement(track.id);
-    } else if (state.playing) {
-      dispatch(pauseTrack());
-      pauseAudioElement();
-    }
+    dispatch(playTrack(track));
+    audio.addEventListener('ended', () => dispatch(playNextTrack()));
+    state.playing ? audio.pause() : playAudioElement(track.id);
   }
+
+  useEffect(() => {
+    if (state.track === track && state.playing) {
+      playAudioElement(state.track.id);
+    }
+  });
 
   return (
     <ListGroup.Item className='d-flex justify-content-between'>
       <div>
         <Button variant='outline-link' className='border-0' onClick={play}>
-          <FontAwesomeIcon icon={state.disabled || !state.playing ? faPlay : faPause} />
+          <FontAwesomeIcon icon={state.track === track && state.playing ? faPause : faPlay} />
         </Button>
         {track.name}
       </div>
-      {favorite ? (
-        <FontAwesomeIcon icon={like} />
-      ) : (
-        <Button variant='outline-link' onClick={addFavoriteTrackToUser} className='border-0'>
-          <FontAwesomeIcon icon={unlike} />
-        </Button>
-      )}
+      <Button variant='outline-link' onClick={addFavoriteTrackToUser} className='border-0'>
+        <FontAwesomeIcon icon={favorite ? like : unlike} />
+      </Button>
     </ListGroup.Item>
   );
 }

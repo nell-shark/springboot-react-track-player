@@ -5,9 +5,6 @@ import com.nellshark.musicplayer.models.TrackListPage;
 import com.nellshark.musicplayer.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +29,9 @@ public class TrackController {
 
     @GetMapping
     public ResponseEntity<TrackListPage> getTrackListPage(
-            @PageableDefault(sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam("page") int page,
             @RequestParam(value = "filter", required = false) String filter) {
-        TrackListPage page = trackService.getTrackListPage(pageable, filter);
-        return ResponseEntity.ok(page);
+        return ResponseEntity.ok(trackService.getTrackListPage(page, filter));
     }
 
     @GetMapping("/{id}")

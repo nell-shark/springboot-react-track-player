@@ -19,7 +19,9 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -27,7 +29,7 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,17 +60,26 @@ public class TrackService {
         return trackRepository.findAll();
     }
 
-    public TrackListPage getTrackListPage(Pageable pageable, String filter) {
-        log.info("Getting tracks by page: {}", pageable.getPageNumber());
+    public TrackListPage getTrackListPage(Integer page, String filter) {
+        log.info("Getting tracks by page: {}", page);
 
-        Page<Track> page = StringUtils.isBlank(filter)
+        if (Objects.isNull(page)) page = 1;
+
+        Sort sort = Sort.by("timestamp").descending();
+        final int PAGE_SIZE = 10;
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE, sort);
+
+        Page<Track> trackListPage = StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable)
                 : trackRepository.search(filter, pageable);
 
         return new TrackListPage(
-                page.getNumber() + 1,
-                page.hasNext(),
-                page.getContent()
+                page,
+                trackListPage.hasNext(),
+                trackListPage.getContent()
+                        .stream()
+                        .map(trackDTOMapper)
+                        .toList()
         );
     }
 
@@ -82,7 +93,7 @@ public class TrackService {
 
         UUID id = UUID.randomUUID();
         Integer seconds = getTrackDurationFromTikaMetadata(tikaMetadata);
-        Instant timestamp = Instant.now();
+        LocalDateTime timestamp = LocalDateTime.now();
 
         Track track = Track.builder()
                 .id(id)
@@ -189,7 +200,7 @@ public class TrackService {
                 .id(UUID.fromString(s3Object.key()))
                 .name(metadata.get("name"))
                 .seconds(Integer.parseInt(metadata.get("seconds")))
-                .timestamp(Instant.parse(metadata.get("timestamp")))
+                .timestamp(LocalDateTime.parse(metadata.get("timestamp")))
                 .build();
     }
 }

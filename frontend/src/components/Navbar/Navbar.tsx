@@ -16,15 +16,18 @@ import { userService } from '@services/userService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
 export function Navbar() {
   const [login, setLogin] = useState<string>('');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
 
   async function fetchUserInfo() {
-    const { data } = await userService.getUserInfo();
-    setLogin(() => data.login || '');
-    setAvatarUrl(() => data.avatarUrl || '');
+    try {
+      const { data } = await userService.getUserInfo();
+      setLogin(() => data.login || '');
+      setAvatarUrl(() => data.avatarUrl || '');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function logout() {

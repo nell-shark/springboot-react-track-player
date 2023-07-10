@@ -2,26 +2,23 @@ import { Button, Container } from 'react-bootstrap';
 
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 
-import { nextTrack, prevTrack } from '@store/slices';
+import { playNextTrack, playPrevTrack } from '@store/slices';
 
 import { faBackwardStep, faForwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 export function TrackPlayer() {
   const dispatch = useAppDispatch();
   const state = useAppSelector(state => state.trackPlayer);
 
-  if (state.disabled) return null;
-
   function previous() {
-    dispatch(prevTrack());
+    dispatch(playPrevTrack());
   }
 
   function play() {}
 
   function next() {
-    dispatch(nextTrack);
+    dispatch(playNextTrack());
   }
 
   return (

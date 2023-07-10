@@ -1,22 +1,27 @@
+import { useEffect } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
+
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
 
 import { TrackItem } from '@pages/Tracks/TrackList/TrackItem';
 
-import { Track } from '@typings/track';
+import { getListTrackPage } from '@store/slices';
 
-interface TrackListProps {
-  isLoading: boolean;
-  tracks: Track[];
-  error?: string;
-}
 
-export function TrackList({ isLoading, tracks, error }: TrackListProps) {
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+export function TrackList() {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(state => state.trackPlayer);
+
+  useEffect(() => {
+    dispatch(getListTrackPage(state.page));
+  }, [dispatch, state.page]);
+
+  if (state.isLoadingPage) return <p>Loading...</p>;
+  if (state.error) return <p>{state.error}</p>;
 
   return (
     <ListGroup>
-      {tracks.map(track => (
+      {state.trackList.map(track => (
         <TrackItem key={track.id} track={track} favorite={false} />
       ))}
     </ListGroup>
