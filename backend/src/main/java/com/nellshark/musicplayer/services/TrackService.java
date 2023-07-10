@@ -78,7 +78,7 @@ public class TrackService {
                 trackListPage.hasNext(),
                 trackListPage.getContent()
                         .stream()
-                        .map(trackDTOMapper)
+                        .map(trackDTOMapper::toDTO)
                         .toList()
         );
     }
@@ -116,7 +116,7 @@ public class TrackService {
         byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), track.getId().toString());
         track.setBytes(bytes);
 
-        return trackDTOMapper.apply(track);
+        return trackDTOMapper.toDTO(track);
     }
 
     public Track getTrackById(UUID id) {

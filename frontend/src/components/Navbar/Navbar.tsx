@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -10,30 +10,32 @@ import { SearchBar } from '@components/Navbar/SearchBar';
 
 import { BASE_URL } from '@data/constants';
 
-import { axiosInstance } from '@services/axiosInstance';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
+
 import { userService } from '@services/userService';
+
+import { removeUser, setUser } from '@store/slices/userSlice';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+
 export function Navbar() {
-  const [login, setLogin] = useState<string>('');
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const userState = useAppSelector(state => state.user);
 
   async function fetchUserInfo() {
     try {
-      const { data } = await userService.getUserInfo();
-      setLogin(() => data.login || '');
-      setAvatarUrl(() => data.avatarUrl || '');
+      const { data } = await userService.getOAuth2UserInfo();
+      dispatch(setUser({ login: data.login, avatarUrl: data.avatarUrl }));
     } catch (error) {
       console.error(error);
     }
   }
 
   async function logout() {
-    await axiosInstance.post('/logout');
-    setLogin(() => '');
-    setAvatarUrl(() => '');
+    await userService.logout();
+    dispatch(removeUser());
   }
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Navbar() {
             <SearchBar />
           </Nav>
           <Nav>
-            {!login && (
+            {!userState.login && (
               <a href={BASE_URL + '/oauth2/authorization/github'} className='text-decoration-none'>
                 <Button variant='outline-light' className='d-flex align-items-center'>
                   <FontAwesomeIcon icon={faGithub} className='sign-in' />
@@ -68,12 +70,12 @@ export function Navbar() {
                 </Button>
               </a>
             )}
-            {login && (
+            {userState.login && (
               <Dropdown>
                 <Dropdown.Toggle variant='primary' id='dropdown-basic'>
                   <>
-                    <img src={avatarUrl} alt='user' className='sign-in avatar rounded' />
-                    {login}
+                    <img src={userState.avatarUrl} alt='user' className='sign-in avatar rounded' />
+                    {userState.login}
                   </>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>

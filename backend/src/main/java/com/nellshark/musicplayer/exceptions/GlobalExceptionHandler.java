@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(error.getStatus()).body(error);
     }
 
-    @ExceptionHandler({TrackNotFoundException.class, AppOauth2UserNotFoundException.class})
+    @ExceptionHandler({TrackNotFoundException.class, AppOAuth2UserNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleException(TrackNotFoundException e, HttpServletRequest request) {
         log.error(e.getClass().getSimpleName() + " Occurred: " + e.getMessage());
 

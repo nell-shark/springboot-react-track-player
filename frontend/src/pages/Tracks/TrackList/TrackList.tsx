@@ -22,7 +22,7 @@ export function TrackList() {
   return (
     <ListGroup>
       {state.trackList.map(track => (
-        <TrackItem key={track.id} track={track} favorite={false} />
+        <TrackItem key={track.id} track={track} />
       ))}
     </ListGroup>
   );

@@ -40,7 +40,7 @@ const trackPlayer = createSlice({
   name: 'trackPlayer',
   initialState,
   reducers: {
-    playTrack(state, action: PayloadAction<Track>) {
+    togglePlayTrack(state, action: PayloadAction<Track>) {
       state.playing = !state.playing;
       state.track = action.payload;
       const index = state.trackList.findIndex(t => t.id === action.payload.id);
@@ -79,4 +79,4 @@ const trackPlayer = createSlice({
 });
 
 export const trackPlayerReducer = trackPlayer.reducer;
-export const { playTrack, playPrevTrack, playNextTrack } = trackPlayer.actions;
+export const { togglePlayTrack, playPrevTrack, playNextTrack } = trackPlayer.actions;

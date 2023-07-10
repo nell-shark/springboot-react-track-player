@@ -1,5 +1,6 @@
 package com.nellshark.musicplayer.controllers;
 
+import com.nellshark.musicplayer.dto.AppOAuth2UserDTO;
 import com.nellshark.musicplayer.services.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,12 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users/oauth2")
-public class OAuth2UserController {
+public class AppOAuth2UserController {
     private final OAuth2UserService oauth2UserService;
 
     @GetMapping("/info")
-    public ResponseEntity<Map<String, String>> getOAuth2UserInfo(@AuthenticationPrincipal OAuth2User principal) {
-        Map<String, String> user = oauth2UserService.getOAuth2UserInfo(principal);
+    public ResponseEntity<AppOAuth2UserDTO> getAppOAuth2User(@AuthenticationPrincipal OAuth2User principal) {
+        AppOAuth2UserDTO user = oauth2UserService.getAppOAuth2UserDTO(principal);
         return ResponseEntity.ok(user);
     }
 

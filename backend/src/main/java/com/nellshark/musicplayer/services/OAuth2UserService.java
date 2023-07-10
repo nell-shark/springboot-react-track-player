@@ -1,6 +1,8 @@
 package com.nellshark.musicplayer.services;
 
-import com.nellshark.musicplayer.exceptions.AppOauth2UserNotFoundException;
+import com.nellshark.musicplayer.dto.AppOAuth2UserDTO;
+import com.nellshark.musicplayer.exceptions.AppOAuth2UserNotFoundException;
+import com.nellshark.musicplayer.mappers.AppOAuth2UserDTOMapper;
 import com.nellshark.musicplayer.models.AppOAuth2User;
 import com.nellshark.musicplayer.models.Track;
 import com.nellshark.musicplayer.repositories.OAuth2UserRepository;
@@ -12,8 +14,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,10 +23,11 @@ import java.util.UUID;
 public class OAuth2UserService extends DefaultOAuth2UserService {
     private final OAuth2UserRepository oauth2UserRepository;
     private final TrackService trackService;
+    private final AppOAuth2UserDTOMapper appOAuth2UserDTOMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        log.info("Loading OAuth2 user: {}", userRequest.getClientRegistration());
+        log.info("Loading AppOAuth2User: {}", userRequest.getClientRegistration());
         OAuth2User oauth2User = super.loadUser(userRequest);
 
         Integer id = oauth2User.getAttribute("id");
@@ -36,19 +37,22 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return oauth2User;
     }
 
-    public Map<String, String> getOAuth2UserInfo(OAuth2User principal) {
+    public AppOAuth2UserDTO getAppOAuth2UserDTO(OAuth2User principal) {
         log.info("Getting login and avatar of OAuth2 user: {}", principal);
-        if (Objects.isNull(principal)) return null;
+        if (Objects.isNull(principal)) throw new NullPointerException("AppOAuth2User is null");
 
-        Map<String, String> map = new HashMap<>();
-        map.put("login", principal.getAttribute("login"));
-        map.put("avatarUrl", principal.getAttribute("avatar_url"));
+        Integer id = principal.getAttribute("id");
+        if (Objects.isNull(id)) throw new NullPointerException("OAuth2User id is null");
 
-        return map;
+        AppOAuth2User appOAuth2User = oauth2UserRepository
+                .findById(id)
+                .orElseThrow(() -> new AppOAuth2UserNotFoundException("AppOAuth2User not found: " + id));
+
+        return appOAuth2UserDTOMapper.toDTO(principal, appOAuth2User);
     }
 
     public void saveAppOAuth2User(AppOAuth2User user) {
-        log.info("Saving OAuth2 user to db");
+        log.info("Saving AppOAuth2User to db");
         oauth2UserRepository.save(user);
     }
 
@@ -67,6 +71,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new AppOauth2UserNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new AppOAuth2UserNotFoundException("User with id " + id + " not found"));
     }
 }

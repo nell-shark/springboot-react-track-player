@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { Footer } from '@components/Footer';
 import { Navbar } from '@components/Navbar';
-import { TrackPlayer } from '@components/TrackPlayer';
 
 import { About } from '@pages/About';
 import { NotFound } from '@pages/NotFound';
@@ -23,7 +22,6 @@ export function App() {
           </Routes>
         </Container>
       </main>
-      <TrackPlayer />
       <Footer />
     </>
   );
