@@ -1,36 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Track } from '@typings/track';
+import { User } from '@typings/user';
 
 interface UserState {
-  login?: string;
-  avatarUrl?: string;
-  favoriteTracks: Track[];
-  authorized: boolean;
+  user: User | null;
 }
 
 const initialState: UserState = {
-  favoriteTracks: [],
-  authorized: false
+  user: null
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<{ login: string; avatarUrl: string }>) {
-      state.login = action.payload.login;
-      state.avatarUrl = action.payload.avatarUrl;
-      state.authorized = true;
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
     },
     addFavoriteTrack(state, action: PayloadAction<Track>) {
-      state.favoriteTracks.push(action.payload);
+      if (state.user) state.user!.favoriteTracks.push(action.payload);
     },
     removeUser(state) {
-      state.login = undefined;
-      state.avatarUrl = undefined;
-      state.favoriteTracks = [];
-      state.authorized = false;
+      state.user = null;
     }
   }
 });

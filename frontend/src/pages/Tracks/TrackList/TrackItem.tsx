@@ -15,9 +15,9 @@ import { Track } from '@typings/track';
 
 import { audio, playAudioElement } from '@utils/trackUtils';
 
-import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
-import { faPause, faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 interface TrackItemProps {
   track: Track;
@@ -29,7 +29,7 @@ export function TrackItem({ track }: TrackItemProps) {
   const userState = useAppSelector(state => state.user);
 
   async function addFavoriteTrackToUser() {
-    if (!userState.authorized) {
+    if (!userState.user) {
       window.open(BASE_URL + '/oauth2/authorization/github', '_self');
       return;
     }
@@ -58,7 +58,7 @@ export function TrackItem({ track }: TrackItemProps) {
         {track.name}
       </div>
       <Button variant='outline-link' className='border-0' onClick={addFavoriteTrackToUser}>
-        <FontAwesomeIcon icon={userState.favoriteTracks.find(t => t.id === track.id) ? like : unlike} />
+        {/*<FontAwesomeIcon icon={userState.user!.favoriteTracks.find(t => t.id === track.id) ? like : unlike} />*/}
       </Button>
     </ListGroup.Item>
   );

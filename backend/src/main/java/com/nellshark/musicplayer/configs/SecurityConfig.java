@@ -1,6 +1,6 @@
 package com.nellshark.musicplayer.configs;
 
-import com.nellshark.musicplayer.services.OAuth2UserService;
+import com.nellshark.musicplayer.services.AppOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CsrfTokenRequestHandler csrfTokenRequestHandler;
-    private final OAuth2UserService oauth2UserService;
+    private final AppOAuth2UserService oauth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,9 +34,7 @@ public class SecurityConfig {
                     .permitAll()
                     .and()
                 .oauth2Login()
-                    .userInfoEndpoint()
-                    .userService(oauth2UserService)
-                    .and()
+                    .userInfoEndpoint(endpointConfig -> endpointConfig.userService(oauth2UserService))
                     .defaultSuccessUrl("http://localhost:3000")
                     .and()
                 .logout()
