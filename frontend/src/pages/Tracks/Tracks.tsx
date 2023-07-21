@@ -25,7 +25,7 @@ export function Tracks({ title }: TracksProps) {
 
   useEffect(() => {
     dispatch(getTracListPage({ page: state.page, filter: searchParams.get('filter') || undefined }));
-  }, [state.page]);
+  }, [dispatch, searchParams, state.page]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   db:
     image: mysql:8.0.32
@@ -8,8 +8,10 @@ services:
       MYSQL_DATABASE: player
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/my_sql/
     healthcheck:
-      test: "mysql $$MYSQL_DATABASE --user=root --password=$$MYSQL_PASSWORD -e 'SELECT 1;'"
+      test: [ "CMD-SHELL", "mysql --user=root --password=root --execute 'USE player;'" ]
       interval: 2s
       retries: 30
       timeout: 60s
@@ -33,3 +35,5 @@ services:
     build: ./frontend/
     ports:
       - "3000:3000"
+volumes:
+  db_data:
