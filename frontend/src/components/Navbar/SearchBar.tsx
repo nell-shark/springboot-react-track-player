@@ -19,6 +19,8 @@ export function SearchBar() {
         filter: searchRef.current!.value
       }).toString()
     });
+
+    window.location.reload();
   }
 
   useEffect(() => {

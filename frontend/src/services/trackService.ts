@@ -2,6 +2,7 @@ import { axiosInstance } from '@services/axiosInstance';
 
 import { Track, TrackListPage } from '@typings/track';
 
+
 class TrackService {
   public getTrackListPage(page: number = 1, filter?: string) {
     return axiosInstance.get<TrackListPage>('/api/v1/tracks', {
@@ -13,10 +14,10 @@ class TrackService {
     return axiosInstance.get<Track>(`/api/v1/tracks/${id}`);
   }
 
-  public uploadTrack(name: string, track: File) {
+  public uploadTrack(name: string, file: File) {
     return axiosInstance.post(
       '/api/v1/tracks',
-      { name, track },
+      { name, file },
       {
         headers: {
           'Content-Type': 'multipart/form-data'

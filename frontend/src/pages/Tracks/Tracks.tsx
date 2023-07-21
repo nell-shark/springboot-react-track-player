@@ -1,6 +1,7 @@
 import { useTitle } from '@hooks/useTitle';
 
 import { AddTrack } from '@pages/Tracks/AddTrack';
+import { ShowMore } from '@pages/Tracks/ShowMore';
 import { TrackList } from '@pages/Tracks/TrackList';
 
 import { Page } from '@typings/page';
@@ -14,7 +15,7 @@ export function Tracks({ title }: TracksProps) {
     <>
       <TrackList />
       <div className='mt-4 d-flex justify-content-center gap-3'>
-        {/*<ShowMore isFetching={isFetching} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />*/}
+        <ShowMore />
         <AddTrack />
       </div>
     </>

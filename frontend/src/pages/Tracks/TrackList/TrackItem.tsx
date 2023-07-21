@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { BASE_URL } from '@data/constants';
-
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 
 import { userService } from '@services/userService';
@@ -13,11 +11,11 @@ import { addFavoriteTrack } from '@store/slices/userSlice';
 
 import { Track } from '@typings/track';
 
-import { audio, playAudioElement } from '@utils/trackUtils';
+import { audio, pauseAudioElement, playAudioElement } from '@utils/trackUtils';
 
+import { faHeart as like, faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 interface TrackItemProps {
   track: Track;
@@ -29,10 +27,6 @@ export function TrackItem({ track }: TrackItemProps) {
   const userState = useAppSelector(state => state.user);
 
   async function addFavoriteTrackToUser() {
-    if (!userState.user) {
-      window.open(BASE_URL + '/oauth2/authorization/github', '_self');
-      return;
-    }
     dispatch(addFavoriteTrack(track));
     await userService.addFavoriteTrack(track.id);
   }
@@ -40,7 +34,7 @@ export function TrackItem({ track }: TrackItemProps) {
   function play() {
     dispatch(togglePlayTrack(track));
     audio.addEventListener('ended', () => dispatch(playNextTrack()));
-    trackPlayerState.playing ? audio.pause() : playAudioElement(track.id);
+    trackPlayerState.playing ? pauseAudioElement() : playAudioElement(track.id);
   }
 
   useEffect(() => {
@@ -58,7 +52,9 @@ export function TrackItem({ track }: TrackItemProps) {
         {track.name}
       </div>
       <Button variant='outline-link' className='border-0' onClick={addFavoriteTrackToUser}>
-        {/*<FontAwesomeIcon icon={userState.user!.favoriteTracks.find(t => t.id === track.id) ? like : unlike} />*/}
+        {userState.user && (
+          <FontAwesomeIcon icon={userState.user!.favoriteTracks.find(t => t.id === track.id) ? like : unlike} />
+        )}
       </Button>
     </ListGroup.Item>
   );

@@ -8,11 +8,7 @@ class UserService {
   }
 
   public addFavoriteTrack(trackId: string) {
-    return axiosInstance.post('/api/v1/users/oauth2/favorite/track', null, {
-      params: {
-        trackId
-      }
-    });
+    return axiosInstance.post(`/api/v1/users/oauth2/favorite/track/${trackId}`);
   }
 
   public logout() {

@@ -22,14 +22,12 @@ export function Navbar() {
     try {
       const { data } = await userService.getOAuth2User();
       dispatch(setUser(data));
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }
 
   useEffect(() => {
     fetchUser();
-  });
+  }, []);
 
   return (
     <NavbarBs id='navigation' collapseOnSelect expand='lg' bg='dark' variant='dark' className='position-fixed w-100'>

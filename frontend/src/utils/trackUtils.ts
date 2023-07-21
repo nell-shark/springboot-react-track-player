@@ -4,7 +4,7 @@ export const audio = new Audio();
 
 export async function playAudioElement(trackId: string) {
   try {
-    audio.pause();
+    pauseAudioElement();
     const { data } = await trackService.getTrackById(trackId);
     const binaryString = atob(data.bytes!);
     const uint8Array = new Uint8Array(Array.from(binaryString, char => char.charCodeAt(0)));
@@ -15,4 +15,8 @@ export async function playAudioElement(trackId: string) {
   } catch (error) {
     console.error('Error playing audio: ', error);
   }
+}
+
+export function pauseAudioElement() {
+  audio.pause();
 }
