@@ -55,6 +55,9 @@ const trackPlayer = createSlice({
       state.hasNextTrack = state.trackList.length - 1 > index;
       state.track = state.hasNextTrack ? state.trackList[index + 1]! : null;
       state.playing = true;
+    },
+    setPage(state, action: PayloadAction<number>) {
+      state.page = action.payload;
     }
   },
   extraReducers: builder => {
@@ -76,4 +79,4 @@ const trackPlayer = createSlice({
 });
 
 export const trackPlayerReducer = trackPlayer.reducer;
-export const { togglePlayTrack, playNextTrack } = trackPlayer.actions;
+export const { togglePlayTrack, playNextTrack, setPage } = trackPlayer.actions;

@@ -26,8 +26,8 @@ export function AuthenticatedUser() {
         </>
       </Dropdown.Toggle>
       <Dropdown.Menu>
-        <Dropdown.Item as={Link} to='/favorite'>
-          Favorite
+        <Dropdown.Item as={Link} to='/favorite/tracks'>
+          Favorite Tracks
         </Dropdown.Item>
         <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
       </Dropdown.Menu>

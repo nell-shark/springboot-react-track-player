@@ -7,9 +7,9 @@ import { ShowMore } from '@pages/Tracks/ShowMore';
 
 import { Page } from '@typings/page';
 
-interface FavoriteProps extends Page {}
+interface FavoriteTracksProps extends Page {}
 
-export function Favorite({ title }: FavoriteProps) {
+export function FavoriteTracks({ title }: FavoriteTracksProps) {
   useTitle(title);
   const state = useAppSelector(state => state.user);
 
