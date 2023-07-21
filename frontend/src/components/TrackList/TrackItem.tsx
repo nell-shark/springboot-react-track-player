@@ -7,14 +7,14 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { userService } from '@services/userService';
 
 import { playNextTrack, togglePlayTrack } from '@store/slices';
-import { addFavoriteTrack } from '@store/slices/userSlice';
+import { toggleFavoriteTrack } from '@store/slices/userSlice';
 
 import { Track } from '@typings/track';
 
 import { audio, pauseAudioElement, playAudioElement } from '@utils/trackUtils';
 
-import { faHeart as like, faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
-import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as unlike } from '@fortawesome/free-regular-svg-icons';
+import { faPause, faPlay, faHeart as like } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface TrackItemProps {
@@ -27,8 +27,9 @@ export function TrackItem({ track }: TrackItemProps) {
   const userState = useAppSelector(state => state.user);
 
   async function addFavoriteTrackToUser() {
-    dispatch(addFavoriteTrack(track));
-    await userService.addFavoriteTrack(track.id);
+    dispatch(toggleFavoriteTrack(track));
+    if (!userState.user!.favoriteTracks.find(t => t.id === track.id)) await userService.addFavoriteTrack(track.id);
+    else await userService.removeFavoriteTrack(track.id);
   }
 
   function play() {
@@ -39,7 +40,7 @@ export function TrackItem({ track }: TrackItemProps) {
 
   useEffect(() => {
     if (trackPlayerState.track === track && trackPlayerState.playing) {
-      playAudioElement(trackPlayerState.track.id);
+      void playAudioElement(trackPlayerState.track.id);
     }
   });
 

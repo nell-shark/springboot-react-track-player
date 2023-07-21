@@ -14,20 +14,21 @@ import { userService } from '@services/userService';
 
 import { setUser } from '@store/slices/userSlice';
 
+
 export function Navbar() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user.user);
 
-  async function fetchUser() {
-    try {
-      const { data } = await userService.getOAuth2User();
-      dispatch(setUser(data));
-    } catch (error) {}
-  }
-
   useEffect(() => {
-    fetchUser();
-  }, []);
+    async function fetchUser() {
+      try {
+        const { data } = await userService.getOAuth2User();
+        dispatch(setUser(data));
+      } catch (error) {}
+    }
+
+    if (!user) void fetchUser();
+  }, [dispatch, user]);
 
   return (
     <NavbarBs id='navigation' collapseOnSelect expand='lg' bg='dark' variant='dark' className='position-fixed w-100'>

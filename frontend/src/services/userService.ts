@@ -11,6 +11,10 @@ class UserService {
     return axiosInstance.post(`/api/v1/users/oauth2/favorite/track/${trackId}`);
   }
 
+  public removeFavoriteTrack(trackId: string) {
+    return axiosInstance.delete(`/api/v1/users/oauth2/favorite/track/${trackId}`);
+  }
+
   public logout() {
     return axiosInstance.post('/logout');
   }

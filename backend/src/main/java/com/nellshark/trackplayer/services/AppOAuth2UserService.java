@@ -32,7 +32,7 @@ public class AppOAuth2UserService extends DefaultOAuth2UserService {
 
         Integer id = oauth2User.getAttribute("id");
         AppOAuth2User appOAuth2User = new AppOAuth2User(id);
-        saveAppOAuth2User(appOAuth2User);
+        saveAppOAuth2UserToDb(appOAuth2User);
 
         return oauth2User;
     }
@@ -51,7 +51,7 @@ public class AppOAuth2UserService extends DefaultOAuth2UserService {
         return appOAuth2UserDTOMapper.toDTO(oauth2User, appOAuth2User);
     }
 
-    public void saveAppOAuth2User(AppOAuth2User user) {
+    public void saveAppOAuth2UserToDb(AppOAuth2User user) {
         log.info("Saving AppOAuth2User to db");
         appOAuth2UserRepository.save(user);
     }
@@ -59,10 +59,19 @@ public class AppOAuth2UserService extends DefaultOAuth2UserService {
     public void addFavoriteTrackToUser(UUID trackId, OAuth2User oauth2User) {
         log.info("Adding favorite track to user: {}", trackId);
         Track track = trackService.getTrackById(trackId);
-        Integer id = oauth2User.getAttribute("id");
-        AppOAuth2User userById = getAppOauth2UserById(id);
+        Integer userId = oauth2User.getAttribute("id");
+        AppOAuth2User userById = getAppOauth2UserById(userId);
         userById.getFavoriteTracks().add(track);
-        saveAppOAuth2User(userById);
+        saveAppOAuth2UserToDb(userById);
+    }
+
+    public void removeUserFavoriteTrack(UUID trackId, OAuth2User oauth2User) {
+        log.info("Adding favorite track to user: {}", trackId);
+        Track track = trackService.getTrackById(trackId);
+        Integer userId = oauth2User.getAttribute("id");
+        AppOAuth2User userById = getAppOauth2UserById(userId);
+        userById.getFavoriteTracks().remove(track);
+        saveAppOAuth2UserToDb(userById);
     }
 
     public AppOAuth2User getAppOauth2UserById(Integer id) {

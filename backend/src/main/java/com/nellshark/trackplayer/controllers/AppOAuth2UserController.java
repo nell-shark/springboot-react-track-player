@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +28,17 @@ public class AppOAuth2UserController {
     }
 
     @PostMapping("/favorite/track/{trackId}")
-    public ResponseEntity<Void> addFavoriteTrackToUser(@PathVariable("trackId") UUID id,
+    public ResponseEntity<Void> addFavoriteTrackToUser(@PathVariable("trackId") UUID trackId,
                                                        @AuthenticationPrincipal OAuth2User oauth2User) {
-        appOAuth2UserService.addFavoriteTrackToUser(id, oauth2User);
+        appOAuth2UserService.addFavoriteTrackToUser(trackId, oauth2User);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/favorite/track/{trackId}")
+    public ResponseEntity<Void> removeFavoriteTrackToUser(@PathVariable("trackId") UUID trackId,
+                                                          @AuthenticationPrincipal OAuth2User oauth2User) {
+        appOAuth2UserService.removeUserFavoriteTrack(trackId, oauth2User);
+        return ResponseEntity.ok().build();
+    }
+
 }

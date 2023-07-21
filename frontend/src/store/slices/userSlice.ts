@@ -18,8 +18,12 @@ const userSlice = createSlice({
     setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    addFavoriteTrack(state, action: PayloadAction<Track>) {
-      if (state.user) state.user!.favoriteTracks.push(action.payload);
+    toggleFavoriteTrack(state, action: PayloadAction<Track>) {
+      if (!state.user) return;
+
+      if (!state.user.favoriteTracks.find(t => t.id === action.payload.id))
+        state.user.favoriteTracks.push(action.payload);
+      else state.user.favoriteTracks = state.user.favoriteTracks.filter(t => t.id !== action.payload.id);
     },
     removeUser(state) {
       state.user = null;
@@ -28,4 +32,4 @@ const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
-export const { setUser, addFavoriteTrack, removeUser } = userSlice.actions;
+export const { setUser, toggleFavoriteTrack, removeUser } = userSlice.actions;

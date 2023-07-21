@@ -1,5 +1,7 @@
 package com.nellshark.trackplayer.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,7 +19,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -49,7 +52,9 @@ public class Track {
     @ToString.Exclude
     private byte[] bytes;
 
-    @ManyToMany(mappedBy = "favoriteTracks")
-    private Set<AppOAuth2User> users;
+    @ManyToMany(mappedBy = "favoriteTracks", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @Builder.Default
+    private List<AppOAuth2User> users = new ArrayList<>();
 }
 
