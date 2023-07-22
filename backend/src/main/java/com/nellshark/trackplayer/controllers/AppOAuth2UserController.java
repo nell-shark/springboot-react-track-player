@@ -40,5 +40,4 @@ public class AppOAuth2UserController {
         appOAuth2UserService.removeUserFavoriteTrack(trackId, oauth2User);
         return ResponseEntity.ok().build();
     }
-
 }

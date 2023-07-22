@@ -31,6 +31,7 @@ aws:
   region: eu-north-1
   s3:
     buckets:
+      # noinspection SpringBootApplicationYaml
       tracks: ${AWS_S3_BUCKETS_TRACKS}
   credentials:
     access-key: ${AWS_CREDENTIALS_ACCESS_KEY}

@@ -1,6 +1,6 @@
 package com.nellshark.trackplayer.controllers;
 
-import com.nellshark.trackplayer.dto.TrackDTO;
+import com.nellshark.trackplayer.models.Track;
 import com.nellshark.trackplayer.models.TrackListPage;
 import com.nellshark.trackplayer.services.TrackService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +35,8 @@ public class TrackController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TrackDTO> getTrackById(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok().body(trackService.getTrackDTOById(id));
+    public ResponseEntity<Track> getTrackById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok().body(trackService.getTrackById(id));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

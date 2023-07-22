@@ -9,8 +9,7 @@ public class TrackDTOMapper {
     public TrackDTO toDTO(Track track) {
         return new TrackDTO(
                 track.getId(),
-                track.getName(),
-                track.getBytes()
+                track.getName()
         );
     }
 }
