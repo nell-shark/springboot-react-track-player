@@ -4,7 +4,6 @@ import com.nellshark.trackplayer.dto.AppOAuth2UserDTO;
 import com.nellshark.trackplayer.services.AppOAuth2UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -19,7 +18,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AppOAuth2UserController.class)
-@AutoConfigureMockMvc
 class AppOAuth2UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +41,7 @@ class AppOAuth2UserControllerTest {
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(oauth2User, List.of(), "github");
         AppOAuth2UserDTO userDTO = new AppOAuth2UserDTO("John", "url", List.of());
 
-        when(appOAuth2UserService.getAppOAuth2UserDTO(oauth2User)).thenReturn(userDTO);
+        when(appOAuth2UserService.getAppOAuth2UserDTO(eq(oauth2User))).thenReturn(userDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/oauth2")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -51,6 +50,8 @@ class AppOAuth2UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login", is(userDTO.login())))
                 .andExpect(jsonPath("$.avatarUrl", is(userDTO.avatarUrl())));
+
+        verify(appOAuth2UserService).getAppOAuth2UserDTO(eq(oauth2User));
     }
 
     @Test
@@ -59,14 +60,14 @@ class AppOAuth2UserControllerTest {
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(oauth2User, List.of(), "github");
         UUID trackId = UUID.randomUUID();
 
-        doNothing().when(appOAuth2UserService).addFavoriteTrackToUser(trackId, oauth2User);
-
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/oauth2/favorite/track/" + trackId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(authentication(authentication))
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        verify(appOAuth2UserService).addFavoriteTrackToUser(eq(trackId), eq(oauth2User));
     }
 
     @Test
@@ -75,13 +76,13 @@ class AppOAuth2UserControllerTest {
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(oauth2User, List.of(), "github");
         UUID trackId = UUID.randomUUID();
 
-        doNothing().when(appOAuth2UserService).removeUserFavoriteTrack(trackId, oauth2User);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/oauth2/favorite/track/" + trackId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(authentication(authentication))
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        verify(appOAuth2UserService).removeUserFavoriteTrack(eq(trackId), eq(oauth2User));
     }
 }

@@ -31,12 +31,14 @@ public class TrackController {
     public ResponseEntity<TrackListPage> getTrackListPage(
             @RequestParam("page") int page,
             @RequestParam(value = "filter", required = false) String filter) {
-        return ResponseEntity.ok(trackService.getTrackListPage(page, filter));
+        TrackListPage trackListPage = trackService.getTrackListPage(page, filter);
+        return ResponseEntity.ok(trackListPage);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Track> getTrackById(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok().body(trackService.getTrackById(id));
+        Track track = trackService.getTrackById(id);
+        return ResponseEntity.ok().body(track);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

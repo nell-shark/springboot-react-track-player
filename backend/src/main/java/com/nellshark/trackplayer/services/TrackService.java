@@ -21,7 +21,6 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -30,6 +29,7 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,9 +65,8 @@ public class TrackService {
 
         if (Objects.isNull(page)) page = 1;
 
-        Sort sort = Sort.by("timestamp").descending();
         final int PAGE_SIZE = 10;
-        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
 
         Page<Track> trackListPage = StringUtils.isBlank(filter)
                 ? trackRepository.findAll(pageable)
@@ -78,6 +77,7 @@ public class TrackService {
                 trackListPage.hasNext(),
                 trackListPage.getContent()
                         .stream()
+                        .sorted(Comparator.comparing(Track::getTimestamp).reversed())
                         .map(trackDTOMapper::toDTO)
                         .toList()
         );
@@ -192,7 +192,7 @@ public class TrackService {
         }
     }
 
-    private Track convertS3ObjectToTrack(S3Object s3Object) {
+    Track convertS3ObjectToTrack(S3Object s3Object) {
         log.info("Converting S3Object to Track");
         Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
 
