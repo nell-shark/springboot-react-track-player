@@ -21,7 +21,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test:6.1.2'
 
-
     implementation 'org.apache.tika:tika-core:2.8.0'
     implementation 'org.apache.tika:tika-parsers:2.8.0'
     implementation 'org.apache.tika:tika-parser-audiovideo-module:2.8.0'
@@ -31,6 +30,9 @@ dependencies {
 
     implementation 'software.amazon.awssdk:s3:2.19.31'
     runtimeOnly 'software.amazon.awssdk:bom:2.19.31'
+
+    testImplementation "org.testcontainers:mysql:1.18.3"
+    testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
@@ -44,6 +46,7 @@ dependencies {
 
     testImplementation 'org.mockito:mockito-inline:2.13.0'
 }
+
 tasks.named('test') {
     useJUnitPlatform()
 }
