@@ -1,7 +1,7 @@
-import { Track } from '@typings/track';
+import { TrackInfo } from '@typings/track';
 
 export interface User {
   login: string;
   avatarUrl: string;
-  favoriteTracks: Track[];
+  favoriteTracks: TrackInfo[];
 }

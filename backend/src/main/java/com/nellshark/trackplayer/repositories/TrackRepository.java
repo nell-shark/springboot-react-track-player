@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TrackRepository extends JpaRepository<Track, UUID> {
     @Query("SELECT track " +
             "FROM  Track track " +
-            "WHERE LOWER(track.name) " +
+            "WHERE LOWER(track.metadata.name) " +
             "LIKE LOWER(CONCAT('%', :filter, '%'))")
     Page<Track> search(@Param("filter") String filter, Pageable pageable);
 }

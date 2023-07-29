@@ -6,6 +6,7 @@ import com.nellshark.trackplayer.exceptions.TrackNotFoundException;
 import com.nellshark.trackplayer.mappers.TrackDTOMapper;
 import com.nellshark.trackplayer.models.Track;
 import com.nellshark.trackplayer.models.TrackListPage;
+import com.nellshark.trackplayer.models.TrackMetadata;
 import com.nellshark.trackplayer.repositories.TrackRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,7 @@ class TrackServiceTest {
         String bucket = "bucket";
         S3Object s3Object = S3Object.builder().build();
         List<S3Object> s3Objects = List.of(s3Object);
-        Track track = Track.builder().name("name").seconds(1).build();
+        Track track = new Track(UUID.randomUUID(), new TrackMetadata("name", 1));
 
         when(s3Buckets.getTracks()).thenReturn(bucket);
         when(s3Service.getS3ObjectsFromBucket(eq(bucket))).thenReturn(s3Objects);
@@ -86,7 +87,7 @@ class TrackServiceTest {
 
     @Test
     void getAllTracks_ShouldReturnListOfTracks() {
-        Track track = Track.builder().name("name").seconds(1).build();
+        Track track = new Track(UUID.randomUUID(), new TrackMetadata("name", 1));
         List<Track> list = List.of(track);
 
         when(trackRepository.findAll()).thenReturn(list);
@@ -101,8 +102,8 @@ class TrackServiceTest {
     @Test
     void getTrackListPage_ShouldReturnTrackListPage() {
         int page = 1;
-        Track track = Track.builder().name("name").seconds(1).build();
-        TrackDTO trackDTO = new TrackDTO(null, track.getName());
+        Track track = new Track(UUID.randomUUID(), new TrackMetadata("name", 1));
+        TrackDTO trackDTO = new TrackDTO(null, track.getMetadata().getName());
         List<Track> trackList = List.of(track);
         Page<Track> trackPage = new PageImpl<>(trackList);
 
@@ -126,8 +127,9 @@ class TrackServiceTest {
     void getTrackById_ShouldReturnTrack() {
         String bucket = "bucket";
         UUID trackId = UUID.randomUUID();
-        Track expectedTrack = Track.builder().id(trackId).name("name").seconds(1).build();
         byte[] bytes = "Hello world".getBytes();
+        TrackMetadata metadata = new TrackMetadata("name", 1);
+        Track expectedTrack = new Track(trackId, metadata, bytes);
 
         when(s3Buckets.getTracks()).thenReturn(bucket);
         when(trackRepository.findById(eq(trackId))).thenReturn(Optional.of(expectedTrack));
@@ -154,7 +156,7 @@ class TrackServiceTest {
 
     @Test
     void saveTrackToDb() {
-        Track track = Track.builder().name("name").seconds(1).build();
+        Track track = new Track(UUID.randomUUID(), new TrackMetadata("name", 1));
 
         when(trackRepository.save(eq(track))).thenReturn(track);
 
@@ -165,7 +167,7 @@ class TrackServiceTest {
 
     @Test
     void saveTrackToS3() {
-        Track track = Track.builder().name("name").seconds(1).build();
+        Track track = new Track(UUID.randomUUID(), new TrackMetadata("name", 1));
 
         underTest.saveTrackToS3(track);
 

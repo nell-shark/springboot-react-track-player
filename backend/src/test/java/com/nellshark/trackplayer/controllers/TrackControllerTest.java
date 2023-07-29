@@ -3,6 +3,7 @@ package com.nellshark.trackplayer.controllers;
 import com.nellshark.trackplayer.dto.TrackDTO;
 import com.nellshark.trackplayer.models.Track;
 import com.nellshark.trackplayer.models.TrackListPage;
+import com.nellshark.trackplayer.models.TrackMetadata;
 import com.nellshark.trackplayer.services.TrackService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,7 +66,10 @@ class TrackControllerTest {
     @WithMockUser
     void getTrackById_ShouldReturnTrack() throws Exception {
         UUID trackId = UUID.randomUUID();
-        Track track = Track.builder().name("1").seconds(1).build();
+        TrackMetadata trackMetadata = new TrackMetadata("name", 1, LocalDateTime.now());
+        byte[] bytes = "Hello world".getBytes();
+        Track track = new Track(trackId, trackMetadata, bytes);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
         when(trackService.getTrackById(eq(trackId))).thenReturn(track);
 
@@ -70,8 +77,11 @@ class TrackControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(track.getName())))
-                .andExpect(jsonPath("$.seconds", is(track.getSeconds())));
+                .andExpect(jsonPath("$.id", is(track.getId().toString())))
+                .andExpect(jsonPath("$.name", is(track.getMetadata().getName())))
+                .andExpect(jsonPath("$.timestamp", is(track.getMetadata().getTimestamp().format(formatter))))
+                .andExpect(jsonPath("$.seconds", is(track.getMetadata().getSeconds())))
+                .andExpect(jsonPath("$.bytes", is(Base64.getEncoder().encodeToString(track.getBytes()))));
 
         verify(trackService).getTrackById(eq(trackId));
     }

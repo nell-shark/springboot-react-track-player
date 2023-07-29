@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Track } from '@typings/track';
+import { TrackInfo } from '@typings/track';
 import { User } from '@typings/user';
 
 interface UserState {
@@ -18,7 +18,7 @@ const userSlice = createSlice({
     setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
     },
-    toggleFavoriteTrack(state, action: PayloadAction<Track>) {
+    toggleFavoriteTrack(state, action: PayloadAction<TrackInfo>) {
       if (!state.user) return;
 
       if (!state.user.favoriteTracks.find(t => t.id === action.payload.id))

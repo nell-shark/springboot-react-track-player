@@ -5,6 +5,7 @@ import com.nellshark.trackplayer.exceptions.AppOAuth2UserNotFoundException;
 import com.nellshark.trackplayer.mappers.AppOAuth2UserDTOMapper;
 import com.nellshark.trackplayer.models.AppOAuth2User;
 import com.nellshark.trackplayer.models.Track;
+import com.nellshark.trackplayer.models.TrackMetadata;
 import com.nellshark.trackplayer.repositories.AppOAuth2UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +97,8 @@ public class AppOAuth2UserServiceTest {
         OAuth2User oauth2User = Mockito.mock(OAuth2User.class);
         AppOAuth2User appOAuth2User = new AppOAuth2User(userId);
         UUID trackId = UUID.randomUUID();
-        Track track = Track.builder().id(trackId).name("name").seconds(1).build();
+        TrackMetadata trackMetadata = new TrackMetadata("name", 1, LocalDateTime.now());
+        Track track = new Track(trackId, trackMetadata);
 
         when(trackService.getTrackById(eq(trackId))).thenReturn(track);
         when(oauth2User.getAttribute(eq("id"))).thenReturn(userId);
@@ -116,7 +119,8 @@ public class AppOAuth2UserServiceTest {
         OAuth2User oauth2User = Mockito.mock(OAuth2User.class);
         AppOAuth2User appOAuth2User = new AppOAuth2User(userId);
         UUID trackId = UUID.randomUUID();
-        Track track = Track.builder().id(trackId).name("name").seconds(1).build();
+        TrackMetadata trackMetadata = new TrackMetadata("name", 1, LocalDateTime.now());
+        Track track = new Track(trackId, trackMetadata);
         appOAuth2User.getFavoriteTracks().add(track);
 
         when(trackService.getTrackById(eq(trackId))).thenReturn(track);

@@ -1,52 +1,40 @@
 package com.nellshark.trackplayer.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.lang.Nullable;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "tracks")
 @Data
-@Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(force = true)
 public class Track {
     @Id
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "VARCHAR(36)")
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
-    @NonNull
-    private String name;
-
-    @Column(name = "seconds", nullable = false, columnDefinition = "INT")
-    @NonNull
-    private Integer seconds;
-
-    @Column(name = "timestamp", nullable = false)
-    @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now();
+    @Embedded
+    @JsonUnwrapped
+    private TrackMetadata metadata;
 
     @Transient
     @ToString.Exclude
@@ -54,7 +42,17 @@ public class Track {
 
     @ManyToMany(mappedBy = "favoriteTracks", cascade = CascadeType.ALL)
     @JsonIgnore
-    @Builder.Default
     private List<AppOAuth2User> users = new ArrayList<>();
+
+    public Track(UUID id, TrackMetadata metadata) {
+        this.id = Objects.nonNull(id) ? id : UUID.randomUUID();
+        this.metadata = metadata;
+    }
+
+    public Track(UUID id, TrackMetadata metadata, @Nullable byte[] bytes) {
+        this.id = Objects.nonNull(id) ? id : UUID.randomUUID();
+        this.metadata = metadata;
+        this.bytes = bytes;
+    }
 }
 

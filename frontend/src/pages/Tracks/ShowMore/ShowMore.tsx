@@ -14,7 +14,7 @@ export function ShowMore() {
 
   return (
     <>
-      {state.hasNextPage && (
+      {state.trackListPage?.hasNext && (
         <Button variant='outline-dark' onClick={fetchNextPage} className='show-more' disabled={state.isLoadingPage}>
           Show more
         </Button>

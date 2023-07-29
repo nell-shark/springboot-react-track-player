@@ -3,26 +3,24 @@ import { AxiosError } from 'axios';
 
 import { trackService } from '@services/trackService';
 
-import { Track, TrackListPage } from '@typings/track';
+import { TrackInfo, TrackListPage } from '@typings/track';
 
 interface TrackPlayerState {
   page: number;
   isLoadingPage: boolean;
-  hasNextPage: boolean;
-  trackList: Track[];
-  hasNextTrack: boolean;
-  playing: boolean;
-  track: Track | null;
+  trackListPage: TrackListPage | null;
+  isLoadingTrack: boolean;
+  isPlaying: boolean;
+  track: TrackInfo | null;
   error: string | null;
 }
 
 const initialState: TrackPlayerState = {
   page: 1,
   isLoadingPage: true,
-  hasNextPage: false,
-  trackList: [],
-  hasNextTrack: false,
-  playing: false,
+  trackListPage: { page: 0, hasNext: false, tracks: [] },
+  isLoadingTrack: false,
+  isPlaying: false,
   track: null,
   error: null
 };
@@ -43,18 +41,9 @@ const trackPlayer = createSlice({
   name: 'trackPlayer',
   initialState,
   reducers: {
-    togglePlayTrack(state, action: PayloadAction<Track>) {
-      if (!state.track) state.playing = true;
-      else state.playing = state.track.id === action.payload.id ? !state.playing : true;
-      state.track = action.payload;
-      const index = state.trackList.findIndex(t => t.id === action.payload.id);
-      state.hasNextTrack = state.trackList.length - 1 > index;
-    },
-    playNextTrack(state) {
-      const index = state.trackList.findIndex(t => state.track!.id === t.id);
-      state.hasNextTrack = state.trackList.length - 1 > index;
-      state.track = state.hasNextTrack ? state.trackList[index + 1]! : null;
-      state.playing = true;
+    playTrack(state, action: PayloadAction<TrackInfo>) {
+      if (!state.track) state.isPlaying = true;
+      else state.isPlaying = state.track.id === action.payload.id ? !state.isPlaying : true;
     },
     setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
@@ -67,9 +56,22 @@ const trackPlayer = createSlice({
       })
       .addCase(getTracListPage.fulfilled, (state, action: PayloadAction<TrackListPage>) => {
         state.isLoadingPage = false;
-        state.trackList.push(...action.payload.tracks);
-        state.page = action.payload.page;
-        state.hasNextPage = action.payload.hasNext;
+
+        if (state.trackListPage) {
+          const existingTrackIds = new Set(state.trackListPage.tracks.map(t => t.id));
+
+          action.payload.tracks
+            .filter(t => !existingTrackIds.has(t.id))
+            .forEach(t => {
+              state.trackListPage!.tracks.push(t);
+              existingTrackIds.add(t.id);
+            });
+
+          state.page = action.payload.page;
+          state.trackListPage.hasNext = action.payload.hasNext;
+        } else {
+          state.trackListPage = action.payload;
+        }
       })
       .addCase(getTracListPage.rejected, (state, action) => {
         state.isLoadingPage = false;
@@ -79,4 +81,4 @@ const trackPlayer = createSlice({
 });
 
 export const trackPlayerReducer = trackPlayer.reducer;
-export const { togglePlayTrack, playNextTrack, setPage } = trackPlayer.actions;
+export const { playTrack, setPage } = trackPlayer.actions;

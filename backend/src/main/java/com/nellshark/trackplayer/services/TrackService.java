@@ -1,7 +1,6 @@
 package com.nellshark.trackplayer.services;
 
 import com.nellshark.trackplayer.configs.S3Buckets;
-import com.nellshark.trackplayer.dto.TrackDTO;
 import com.nellshark.trackplayer.exceptions.FileIsEmptyException;
 import com.nellshark.trackplayer.exceptions.FileMustBeTrackException;
 import com.nellshark.trackplayer.exceptions.ParseTrackException;
@@ -9,6 +8,7 @@ import com.nellshark.trackplayer.exceptions.TrackNotFoundException;
 import com.nellshark.trackplayer.mappers.TrackDTOMapper;
 import com.nellshark.trackplayer.models.Track;
 import com.nellshark.trackplayer.models.TrackListPage;
+import com.nellshark.trackplayer.models.TrackMetadata;
 import com.nellshark.trackplayer.repositories.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,10 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -77,7 +79,7 @@ public class TrackService {
                 trackListPage.hasNext(),
                 trackListPage.getContent()
                         .stream()
-                        .sorted(Comparator.comparing(Track::getTimestamp).reversed())
+                        .sorted(Comparator.comparing(t -> t.getMetadata().getTimestamp()))
                         .map(trackDTOMapper::toDTO)
                         .toList()
         );
@@ -94,29 +96,11 @@ public class TrackService {
         UUID id = UUID.randomUUID();
         Integer seconds = getTrackDurationFromTikaMetadata(tikaMetadata);
         LocalDateTime timestamp = LocalDateTime.now();
-
-        Track track = Track.builder()
-                .id(id)
-                .name(trackName)
-                .seconds(seconds)
-                .timestamp(timestamp)
-                .bytes(trackBytes)
-                .build();
+        TrackMetadata trackMetadata = new TrackMetadata(trackName, seconds, timestamp);
+        Track track = new Track(id, trackMetadata, trackBytes);
 
         saveTrackToS3(track);
         saveTrackToDb(track);
-    }
-
-    public TrackDTO getTrackDTOById(UUID id) {
-        log.info("Getting track dto by Id: {}", id);
-        Track track = trackRepository
-                .findById(id)
-                .orElseThrow(() -> new TrackNotFoundException("Track not found: " + id));
-
-        byte[] bytes = s3Service.getObject(s3Buckets.getTracks(), track.getId().toString());
-        track.setBytes(bytes);
-
-        return trackDTOMapper.toDTO(track);
     }
 
     public Track getTrackById(UUID id) {
@@ -139,16 +123,33 @@ public class TrackService {
     public void saveTrackToS3(Track track) {
         log.info("Saving track to S3: {}", track);
 
-        Map<String, String> metadata = Map.of(
-                "name", track.getName(),
-                "seconds", track.getSeconds().toString(),
-                "timestamp", track.getTimestamp().toString()
-        );
+        Map<String, String> metadata = new HashMap<>();
+        for (Field field : track.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                metadata.put(field.getName(), field.get(track).toString());
+            } catch (Exception ignored) {
+            }
+        }
 
         s3Service.putObject(s3Buckets.getTracks(),
                 track.getId().toString(),
                 track.getBytes(),
                 metadata);
+    }
+
+    Track convertS3ObjectToTrack(S3Object s3Object) {
+        log.info("Converting S3Object to Track");
+        Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
+
+        UUID id = UUID.fromString(s3Object.key());
+        TrackMetadata trackMetadata = new TrackMetadata(
+                metadata.get("name"),
+                Integer.parseInt(metadata.get("seconds")),
+                LocalDateTime.parse(metadata.get("timestamp"))
+        );
+
+        return new Track(id, trackMetadata);
     }
 
     private void checkTrackFileIsValid(MultipartFile trackFile) {
@@ -190,17 +191,5 @@ public class TrackService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    Track convertS3ObjectToTrack(S3Object s3Object) {
-        log.info("Converting S3Object to Track");
-        Map<String, String> metadata = s3Service.getMetadata(s3Buckets.getTracks(), s3Object.key());
-
-        return Track.builder()
-                .id(UUID.fromString(s3Object.key()))
-                .name(metadata.get("name"))
-                .seconds(Integer.parseInt(metadata.get("seconds")))
-                .timestamp(LocalDateTime.parse(metadata.get("timestamp")))
-                .build();
     }
 }

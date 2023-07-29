@@ -4,10 +4,10 @@ import { TrackItem } from '@components/TrackList/TrackItem';
 
 import { useAppSelector } from '@hooks/redux';
 
-import { Track } from '@typings/track';
+import { TrackInfo } from '@typings/track';
 
 interface TrackListProps {
-  tracks: Track[];
+  tracks: TrackInfo[];
 }
 
 export function TrackList({ tracks }: TrackListProps) {
@@ -19,7 +19,7 @@ export function TrackList({ tracks }: TrackListProps) {
   return (
     <ListGroup>
       {tracks.map(track => (
-        <TrackItem key={track.id} track={track} />
+        <TrackItem key={track.id} trackInfo={track} />
       ))}
     </ListGroup>
   );

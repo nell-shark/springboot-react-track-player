@@ -29,7 +29,7 @@ export function Tracks({ title }: TracksProps) {
 
   return (
     <>
-      <TrackList tracks={state.trackList} />
+      <TrackList tracks={state.trackListPage?.tracks || []} />
       <div className='mt-4 d-flex justify-content-center gap-3'>
         <ShowMore />
         <AddTrack />
