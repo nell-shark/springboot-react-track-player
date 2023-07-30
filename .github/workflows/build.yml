@@ -7,6 +7,13 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  GITHUB_CLIENT_ID: ${{ secrets.YOUR_GITHUB_CLIENT_ID }}
+  GITHUB_CLIENT_SECRET: ${{ secrets.YOUR_GITHUB_CLIENT_SECRET }}
+  AWS_S3_BUCKETS_TRACKS: ${{ secrets.YOUR_AWS_S3_BUCKETS_TRACKS }}
+  AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.YOUR_AWS_CREDENTIALS_ACCESS_KEY }}
+  AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.YOUR_AWS_CREDENTIALS_SECRET_KEY }}
+
 jobs:
   build1:
     runs-on: ubuntu-latest
@@ -22,7 +29,8 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -39,10 +47,7 @@ jobs:
 
       - name: Gradle clean Build without tests
         env:
-          GITHUB_CLIENT_ID: ${{ secrets.YOUR_GITHUB_CLIENT_ID }}
-          GITHUB_CLIENT_SECRET: ${{ secrets.YOUR_GITHUB_CLIENT_SECRET }}
-          AWS_S3_BUCKETS_TRACKS: ${{ secrets.YOUR_AWS_S3_BUCKETS_TRACKS }}
-          AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.YOUR_AWS_CREDENTIALS_ACCESS_KEY }}
-          AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.YOUR_AWS_CREDENTIALS_SECRET_KEY }}
-          SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/player
-        run: ./backend/gradlew clean build --no-daemon –x test
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/player
+        run: |
+          cd ./backend 
+          ./gradlew clean build --no-daemon –x test
