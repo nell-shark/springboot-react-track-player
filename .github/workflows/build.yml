@@ -50,4 +50,4 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/player
         run: |
           cd ./backend 
-          ./gradlew clean build --no-daemon –x test
+          ./gradlew clean build --no-daemon -x test
