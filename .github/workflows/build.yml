@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
+      db:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: root
@@ -47,7 +47,7 @@ jobs:
 
       - name: Gradle clean Build without tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/player
+          SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/player
         run: |
           cd ./backend 
           ./gradlew clean build --no-daemon -x test
