@@ -32,12 +32,12 @@ jobs:
           cache: 'gradle'
 
       - name: Create MySQL Database
-        run: mysql -h localhost --user=root --password=root -e "CREATE DATABASE IF NOT EXISTS player;"
+        run: mysql --host 127.0.0.1 --port 3306 --user=root --password=root -e "CREATE DATABASE IF NOT EXISTS player;"
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./backend/gradlew
 
-      - name: Gradle Clean Build Without Tests
+      - name: Gradle clean Build without tests
         env:
           GITHUB_CLIENT_ID: ${{ secrets.YOUR_GITHUB_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.YOUR_GITHUB_CLIENT_SECRET }}
