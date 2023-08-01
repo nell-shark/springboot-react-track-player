@@ -59,9 +59,6 @@ Audio streaming service
   <a href="https://react.dev/">
     <img src="https://skillicons.dev/icons?i=react"  alt='react'/>
   </a>
-  <a href="https://www.mysql.com/">
-    <img src="https://skillicons.dev/icons?i=mysql"  alt='mysql'/>
-  </a>
   <a href="https://redux.js.org/">
     <img src="https://skillicons.dev/icons?i=redux"  alt='redux'/>
   </a>
