@@ -10,7 +10,8 @@ public class CsrfTokenConfig {
     @Bean
     public CsrfTokenRequestHandler csrfTokenRequestHandler() {
         XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-        delegate.setCsrfRequestAttributeName("_csrf");
+        delegate.setCsrfRequestAttributeName(null);
+        //noinspection FunctionalExpressionCanBeFolded
         return delegate::handle;
     }
 }

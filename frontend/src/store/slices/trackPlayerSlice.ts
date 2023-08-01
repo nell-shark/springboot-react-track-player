@@ -44,6 +44,8 @@ const trackPlayer = createSlice({
     playTrack(state, action: PayloadAction<TrackInfo>) {
       if (!state.track) state.isPlaying = true;
       else state.isPlaying = state.track.id === action.payload.id ? !state.isPlaying : true;
+
+      state.track = action.payload;
     },
     setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
