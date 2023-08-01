@@ -6,7 +6,7 @@ Audio streaming service
 
 [Installation](#installation) •
 [Built With](#built-with) •
-[License](#license) •
+[License](#license)
 
 
 ![screenshot](.github/thumbnail.png)
